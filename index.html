@@ -31,6 +31,7 @@ h1 span{color:var(--ac2);font-size:.74rem;margin-left:5px;text-shadow:none}
 .panel{background:var(--input);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
 label{font-size:.7rem;color:var(--mu);text-transform:uppercase;letter-spacing:1px;font-weight:700}
 input[type=text],input[type=password],textarea,select{background:#0a0e1a;border:1px solid var(--line);color:var(--tx);padding:9px 10px;border-radius:8px;font-size:.86rem;outline:none;resize:none;width:100%}
+.mask{-webkit-text-security:disc;text-security:disc}
 [data-theme=light] input[type=text],[data-theme=light] input[type=password],[data-theme=light] textarea,[data-theme=light] select{background:#f7f9fc}
 textarea.code{font-family:ui-monospace,Menlo,monospace;font-size:.7rem}
 input:focus,textarea:focus,select:focus{border-color:var(--ac);box-shadow:0 0 0 2px #00f0ff26}
@@ -218,7 +219,7 @@ button{-webkit-tap-highlight-color:transparent}
 
  <section class="panel">
   <label for="name">Sua conta</label>
-  <input type="text" id="name" maxlength="24" placeholder="Seu nome" autocomplete="off">
+  <input type="text" id="name" name="nx_display_name" maxlength="24" placeholder="Seu nome" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
   <div class="myid" id="myid"></div>
   <div class="row">
    <button class="ghost sm" style="flex:1" id="copyId">Copiar ID</button>
@@ -237,15 +238,15 @@ button{-webkit-tap-highlight-color:transparent}
    <button id="tabRoom">👥 Sala</button>
   </div>
   <div id="paneDm" style="display:flex;flex-direction:column;gap:7px">
-   <input type="text" id="dialId" placeholder="XXXX-XXXX" maxlength="9" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px">
+   <input type="text" id="dialId" name="nx_dial_peer" placeholder="XXXX-XXXX" maxlength="9" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-form-type="other" style="text-transform:uppercase;letter-spacing:2px">
    <button id="dialBtn">Conectar</button>
   </div>
   <div id="paneRoom" style="display:none;flex-direction:column;gap:7px">
-   <input type="text" id="roomCodeIn" placeholder="Código da sala" maxlength="24" autocomplete="off" style="text-transform:uppercase;letter-spacing:1.5px">
-   <input type="password" id="roomPassIn" placeholder="Senha (opcional)" autocomplete="off">
+   <input type="text" id="roomCodeIn" name="nx_room_code" placeholder="Código da sala" maxlength="24" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-form-type="other" style="text-transform:uppercase;letter-spacing:1.5px">
+   <input type="text" id="roomPassIn" name="nx_room_secret" class="mask" placeholder="Senha (opcional)" maxlength="48" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
    <div class="row">
     <button id="joinRoomBtn">Entrar</button>
-    <button class="ghost" id="newRoomBtn">Nova</button>
+    <button class="ghost" id="newRoomBtn">Criar</button>
    </div>
   </div>
  </section>
@@ -304,7 +305,7 @@ button{-webkit-tap-highlight-color:transparent}
  <div class="lbox">
   <h1>🔒 Bloqueado</h1>
   <p id="lockMsg">Digite seu PIN.</p>
-  <input type="password" id="pinIn" maxlength="12" placeholder="PIN" inputmode="numeric" style="text-align:center;letter-spacing:6px;font-size:1.2rem">
+  <input type="text" id="pinIn" name="nx_unlock_pin" class="mask" maxlength="12" placeholder="PIN" inputmode="numeric" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other" style="text-align:center;letter-spacing:6px;font-size:1.2rem">
   <button id="pinGo">Desbloquear</button>
  </div>
 </div>
@@ -351,7 +352,7 @@ button{-webkit-tap-highlight-color:transparent}
   <details>
    <summary>🔒 PIN de bloqueio</summary>
    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-    <input type="password" id="newPin" placeholder="Novo PIN (4 a 12 dígitos)" maxlength="12" inputmode="numeric">
+    <input type="text" id="newPin" name="nx_set_pin" class="mask" placeholder="Novo PIN (4 a 12 dígitos)" maxlength="12" inputmode="numeric" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
     <div class="row">
      <button id="savePin">Definir PIN</button>
      <button class="danger" id="clrPin">Remover PIN</button>
@@ -362,8 +363,8 @@ button{-webkit-tap-highlight-color:transparent}
    <summary>🌐 Servidor TURN</summary>
    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
     <input type="text" id="turnUrl" placeholder="turn:seu-servidor.com:3478">
-    <input type="text" id="turnUser" placeholder="Usuário TURN">
-    <input type="password" id="turnPass" placeholder="Senha / Credencial">
+    <input type="text" id="turnUser" name="nx_turn_u" placeholder="Usuário TURN" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
+    <input type="text" id="turnPass" name="nx_turn_p" class="mask" placeholder="Senha / Credencial" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
     <div class="row">
      <button id="saveTurn">Salvar TURN</button>
      <button class="danger" id="clrTurn">Remover</button>
@@ -533,7 +534,7 @@ const DB=(()=>{
 /* ==================== ESTADO GLOBAL ==================== */
 const hist=$('hist'),inp=$('msg'),nameIn=$('name'),side=$('side');
 let myId='',myName='',myPriv=null,myPubJwk=null,soundOn=true,theme='dark',turnCfg=null,pinHash=null;
-let activeChatId=null,activeRoomId=null,lastDay='',reply=null,pinnedId=null,ttlIdx=0,rxTargetId=null;
+let activeChatId=null,activeRoomId=null,activeRoomMeta=null,roomBusy=false,lastDay='',reply=null,pinnedId=null,ttlIdx=0,rxTargetId=null;
 let esPersonal=null,esRoom=null,manualPeer=null;
 let localStream=null,shareStream=null,callState='',callRoomId=null,callVideo=false,callTimer=null,ringInt=null,ringCtx=null,facing='user';
 let rec=null,recStream=null,recStart=0,recTm=null,recAborted=false;
@@ -555,7 +556,7 @@ function beep(){if(!soundOn)return;try{const c=ringCtx||(ringCtx=new(window.Audi
  g.gain.setValueAtTime(.05,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.14);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.15)}catch{}}
 function notify(t){if(!document.hidden){beep();return}document.title='● Nexus | nova mensagem';beep();
  if(window.Notification&&Notification.permission==='granted')try{new Notification('Nexus',{body:String(t||'').slice(0,100)})}catch{}}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden){document.title='Nexus | P2P';listenPersonal();markVisibleRead()}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){document.title='Nexus | P2P';listenPersonal();ensureRoomSSE();markVisibleRead()}});
 
 /* ==================== COMPACTAÇÃO SDP ==================== */
 async function pack(d){const u=new TextEncoder().encode(JSON.stringify({type:d.type,sdp:d.sdp}));return window.CompressionStream?'N1.'+b64(await runStream(u,CompressionStream)):'N0.'+b64(u)}
@@ -564,9 +565,15 @@ async function unpack(s){s=s.replace(/\s+/g,'');let j;
  else if(s.startsWith('N0.'))j=new TextDecoder().decode(unb64(s.slice(3)));
  else j=atob(s);
  const d=JSON.parse(j);if(!d.sdp||!/^(offer|answer)$/.test(d.type))throw 0;return d}
-const gathered=p=>new Promise(r=>{if(p.iceGatheringState==='complete')return r();
- const f=()=>{if(p.iceGatheringState==='complete'){p.removeEventListener('icegatheringstatechange',f);r()}};
- p.addEventListener('icegatheringstatechange',f);setTimeout(r,5500)});
+const gathered=p=>new Promise(r=>{
+ if(p.iceGatheringState==='complete')return r();
+ let done=false,grace=null;
+ const fin=()=>{if(done)return;done=true;clearTimeout(cap);clearTimeout(grace);p.removeEventListener('icegatheringstatechange',st);p.removeEventListener('icecandidate',cand);r()};
+ const st=()=>{if(p.iceGatheringState==='complete')fin()};
+ const cand=e=>{const c=e.candidate?.candidate||'';if(!grace&&(c.includes(' typ srflx ')||c.includes(' typ relay ')))grace=setTimeout(fin,900)};
+ const cap=setTimeout(fin,3800);
+ p.addEventListener('icegatheringstatechange',st);p.addEventListener('icecandidate',cand);
+});
 
 /* ==================== CRIPTOGRAFIA ECDH P-256 & RELAY ==================== */
 async function initKeys(){if(!crypto.subtle)return;
@@ -651,7 +658,7 @@ function closeAllPeers(roomOnly=null){
  for(const[k,p]of[...peers]){
   if(roomOnly===null||p.roomId===roomOnly){sendToPeer(p,{t:'bye'});closePeer(k,true)}
  }
- if((roomOnly===null||roomOnly===activeRoomId)&&esRoom){esRoom.close();esRoom=null;activeRoomId=null}
+ if(roomOnly===null||roomOnly===activeRoomId){if(esRoom){esRoom.close();esRoom=null}activeRoomId=null;activeRoomMeta=null}
  updateHeaderStatus();renderContacts();
 }
 
@@ -760,36 +767,138 @@ async function dialDM(id){
  }catch(e){toast('Falha ao conectar (sem internet?)');console.error(e);closePeer(k,true)}
 }
 
-/* Salas em Malha (WebRTC Full-Mesh com proteção contra colisão/ofertas duplicadas) */
-async function joinRoom(rawCode,pass=''){
- const code=cleanRoom(rawCode);if(code.length<3)return toast('Código da sala muito curto (mín. 3 chars).');
- if(!crypto.subtle)return toast('Requer HTTPS/localhost para salas.');
+/* Salas Online (WebRTC Full-Mesh com verificação estrita de existência) */
+function openSSE(url){
+ return new Promise((ok,no)=>{
+  const es=new EventSource(url);
+  let settled=false;
+  const tm=setTimeout(()=>{if(!settled){settled=true;es.close();no(new Error('timeout'))}},6500);
+  es.onopen=()=>{if(!settled){settled=true;clearTimeout(tm);ok(es)}};
+  es.onerror=()=>{if(!settled&&es.readyState===EventSource.CLOSED){settled=true;clearTimeout(tm);no(new Error('closed'))}};
+ });
+}
+
+function setRoomBtns(busy){
+ roomBusy=busy;
+ $('joinRoomBtn').disabled=$('newRoomBtn').disabled=busy;
+ $('joinRoomBtn').textContent=busy?'Buscando…':'Entrar';
+}
+
+function attachRoomListener(es,rid,code,pass){
+ es.onmessage=async e=>{
+  try{
+   const m=JSON.parse(e.data);if(m.event!=='message')return;
+   if(m.time&&Date.now()/1000-m.time>60)return;
+   const o=await unsealRoom(code,pass,m.message);
+   if(!o||o.from===myId)return;
+   await onRoomSig(rid,code,pass,o);
+  }catch{}
+ };
+}
+
+async function ensureRoomSSE(){
+ if(!activeRoomMeta)return;
+ if(esRoom&&esRoom.readyState===EventSource.OPEN)return;
+ const{rid,code,pass}=activeRoomMeta;
+ try{
+  if(esRoom)esRoom.close();
+  esRoom=await openSSE(RELAY+await roomTopic(code)+'/sse');
+  attachRoomListener(esRoom,rid,code,pass);
+ }catch{}
+}
+
+async function createRoom(rawCode='',pass=''){
+ if(roomBusy)return;
+ if(!crypto.subtle)return toast('Requer HTTPS ou localhost.');
+ const typed=cleanRoom(rawCode);
+ if(rawCode.trim()&&typed.length<3)return toast('Código muito curto (mín. 3 caracteres).');
+ const code=typed||('NX-'+genId().slice(0,5));
  const rid='room:'+code;
- const chat=await ensureChat(rid,'room','#'+code,{roomCode:code,roomPass:pass});
- if(pass!==undefined){chat.roomPass=pass;await DB.putChat(chat)}
- await showChat(rid);
-
- if(esRoom){esRoom.close();esRoom=null}
- if(activeRoomId&&activeRoomId!==rid)closeAllPeers(activeRoomId);
- activeRoomId=rid;
- updateHeaderStatus('Entrando na sala #'+code+'…',true);
-
+ setRoomBtns(true);
+ updateHeaderStatus('Abrindo #'+code+'…',true);
  try{
   const tp=await roomTopic(code);
-  esRoom=new EventSource(RELAY+tp+'/sse?since=10s');
-  esRoom.onmessage=async e=>{
+  const newEs=await openSSE(RELAY+tp+'/sse');
+  if(esRoom){esRoom.close();esRoom=null}
+  if(activeRoomId&&activeRoomId!==rid)closeAllPeers(activeRoomId);
+  esRoom=newEs;activeRoomId=rid;activeRoomMeta={rid,code,pass};
+  attachRoomListener(esRoom,rid,code,pass);
+  const chat=await ensureChat(rid,'room','#'+code,{roomCode:code,roomPass:pass});
+  chat.roomPass=pass;await DB.putChat(chat);
+  await showChat(rid);
+  $('roomCodeIn').value='';$('roomPassIn').value='';
+  await postRoom(code,pass,{t:'join',from:myId,name:me()});
+  sys('🌐 Sala #'+code+(pass?' 🔒':'')+' aberta. Compartilhe o código ou link 🔗.');
+  updateHeaderStatus();
+ }catch(e){
+  toast('Sem conexão com o servidor.');console.error(e);updateHeaderStatus();
+ }finally{setRoomBtns(false)}
+}
+
+async function joinRoom(rawCode,pass='',allowHost=false){
+ if(roomBusy)return;
+ const code=cleanRoom(rawCode);
+ if(code.length<3)return toast('Digite um código de sala válido (mín. 3 caracteres).');
+ if(!crypto.subtle)return toast('Requer HTTPS ou localhost.');
+ if(allowHost)return createRoom(code,pass);
+
+ const rid='room:'+code;
+ if(activeRoomId===rid&&esRoom&&esRoom.readyState===EventSource.OPEN){await showChat(rid);closeMenu();return}
+
+ setRoomBtns(true);
+ updateHeaderStatus('Verificando #'+code+'…',true);
+ let tmpEs=null,retryTm=null;
+ try{
+  const tp=await roomTopic(code);
+  tmpEs=await openSSE(RELAY+tp+'/sse');
+  const early=[];
+  let found=false,promoted=false,resolveFound;
+  const waitFound=new Promise(r=>{resolveFound=r});
+
+  tmpEs.onmessage=async e=>{
    try{
     const m=JSON.parse(e.data);if(m.event!=='message')return;
-    if(Date.now()/1000-(m.time||0)>60)return;
-    const o=await unsealRoom(code,chat.roomPass||'',m.message);
+    if(m.time&&Date.now()/1000-m.time>60)return;
+    const o=await unsealRoom(code,pass,m.message);
     if(!o||o.from===myId)return;
-    await onRoomSig(rid,code,chat.roomPass||'',o);
+    if(!found&&(o.t==='here'||o.t==='r_offer')&&o.to===myId){
+     found=true;early.push(o);resolveFound(true);return;
+    }
+    if(promoted)await onRoomSig(rid,code,pass,o);
+    else if(found)early.push(o);
    }catch{}
   };
-  await postRoom(code,chat.roomPass||'',{t:'join',from:myId,name:me(),pub:myPubJwk});
-  sys('🌐 Você entrou em #'+code+(chat.roomPass?' 🔒':''));
+
+  await postRoom(code,pass,{t:'probe',from:myId,name:me()});
+  retryTm=setTimeout(()=>{if(!found)postRoom(code,pass,{t:'probe',from:myId,name:me()}).catch(()=>{})},2400);
+  const ok=await Promise.race([waitFound,new Promise(r=>setTimeout(()=>r(false),6200))]);
+  clearTimeout(retryTm);
+
+  if(!ok){
+   tmpEs.close();tmpEs=null;
+   updateHeaderStatus();
+   return toast('Sala #'+code+' não encontrada ou senha incorreta.');
+  }
+
+  if(esRoom){esRoom.close();esRoom=null}
+  if(activeRoomId&&activeRoomId!==rid)closeAllPeers(activeRoomId);
+  esRoom=tmpEs;tmpEs=null;activeRoomId=rid;activeRoomMeta={rid,code,pass};
+
+  const chat=await ensureChat(rid,'room','#'+code,{roomCode:code,roomPass:pass});
+  chat.roomPass=pass;await DB.putChat(chat);
+  await showChat(rid);
+  $('roomCodeIn').value='';$('roomPassIn').value='';
+  promoted=true;
+  attachRoomListener(esRoom,rid,code,pass);
+  sys('🌐 Conectando à sala #'+code+(pass?' 🔒':'')+'…');
+  while(early.length)await onRoomSig(rid,code,pass,early.shift());
+  await postRoom(code,pass,{t:'join',from:myId,name:me()});
   updateHeaderStatus();
- }catch(e){toast('Erro ao entrar na sala.');console.error(e)}
+ }catch(e){
+  if(tmpEs)tmpEs.close();
+  clearTimeout(retryTm);
+  toast('Falha ao buscar sala (sem internet?).');console.error(e);updateHeaderStatus();
+ }finally{setRoomBtns(false)}
 }
 
 async function onRoomSig(rid,code,pass,o){
@@ -797,29 +906,30 @@ async function onRoomSig(rid,code,pass,o){
  const k=peerKey(from,rid),ex=peers.get(k);
  const alreadyPendingOrOpen=ex&&(isPeerOpen(ex)||(ex.pc.signalingState==='have-local-offer'&&Date.now()-ex.createdAt<15000));
 
- if(o.t==='join'){
+ if(o.t==='probe'){
+  await postRoom(code,pass,{t:'here',from:myId,to:from,name:me()});
+ }else if(o.t==='join'){
+  await postRoom(code,pass,{t:'here',from:myId,to:from,name:me()});
   if(alreadyPendingOrOpen)return;
   if(myId>from){
-   const p=createPeer(from,{name:o.name,pub:o.pub,roomId:rid,polite:false});
+   const p=createPeer(from,{name:o.name,roomId:rid,polite:false});
    bindDC(p,p.pc.createDataChannel('chat'));
    await p.pc.setLocalDescription(await p.pc.createOffer());await gathered(p.pc);
-   await postRoom(code,pass,{t:'r_offer',from:myId,to:from,name:me(),pub:myPubJwk,d:await pack(p.pc.localDescription)});
-  }else{
-   await postRoom(code,pass,{t:'here',from:myId,to:from,name:me(),pub:myPubJwk});
+   await postRoom(code,pass,{t:'r_offer',from:myId,to:from,name:me(),d:await pack(p.pc.localDescription)});
   }
  }else if(o.t==='here'&&o.to===myId){
   if(alreadyPendingOrOpen)return;
   if(myId>from){
-   const p=createPeer(from,{name:o.name,pub:o.pub,roomId:rid,polite:false});
+   const p=createPeer(from,{name:o.name,roomId:rid,polite:false});
    bindDC(p,p.pc.createDataChannel('chat'));
    await p.pc.setLocalDescription(await p.pc.createOffer());await gathered(p.pc);
-   await postRoom(code,pass,{t:'r_offer',from:myId,to:from,name:me(),pub:myPubJwk,d:await pack(p.pc.localDescription)});
+   await postRoom(code,pass,{t:'r_offer',from:myId,to:from,name:me(),d:await pack(p.pc.localDescription)});
   }
  }else if(o.t==='r_offer'&&o.to===myId){
   if(ex&&isPeerOpen(ex))return;
-  const p=createPeer(from,{name:o.name,pub:o.pub,roomId:rid,polite:true});
+  const p=createPeer(from,{name:o.name,roomId:rid,polite:true});
   await p.pc.setRemoteDescription(await unpack(o.d));await p.pc.setLocalDescription(await p.pc.createAnswer());await gathered(p.pc);
-  await postRoom(code,pass,{t:'r_answer',from:myId,to:from,name:me(),pub:myPubJwk,d:await pack(p.pc.localDescription)});
+  await postRoom(code,pass,{t:'r_answer',from:myId,to:from,name:me(),d:await pack(p.pc.localDescription)});
  }else if(o.t==='r_answer'&&o.to===myId){
   if(ex&&ex.pc.signalingState==='have-local-offer')await ex.pc.setRemoteDescription(await unpack(o.d));
  }
@@ -935,7 +1045,7 @@ function renderContacts(){
   const cn=el('span','','⚡');cn.title=isRoom?'Entrar na sala':'Conectar P2P';
   const x=el('span','','✕');x.title='Remover';
   r.onclick=()=>{showChat(c.id);closeMenu()};
-  cn.onclick=e=>{e.stopPropagation();if(isRoom)joinRoom(c.roomCode||c.name.slice(1),c.roomPass||'');else dialDM(c.id)};
+  cn.onclick=e=>{e.stopPropagation();if(isRoom)joinRoom(c.roomCode||c.name.slice(1),c.roomPass||'',true);else dialDM(c.id)};
   x.onclick=async e=>{e.stopPropagation();if(!confirm('Remover conversa e histórico?'))return;
    if(isRoom)closeAllPeers(c.id);else closePeer(peerKey(c.id,null),true);
    await DB.clearChatMsgs(c.id);await DB.delChat(c.id);chatsCache.delete(c.id);
@@ -1654,11 +1764,12 @@ $('pollSend').onclick=async()=>{
 };
 
 $('tabDm').onclick=()=>{$('tabDm').classList.add('act');$('tabRoom').classList.remove('act');$('paneDm').style.display='flex';$('paneRoom').style.display='none'};
-$('tabRoom').onclick=()=>{$('tabRoom').classList.add('act');$('tabDm').classList.remove('act');$('paneRoom').style.display='flex';$('paneDm').style.display='none'};
-$('joinRoomBtn').onclick=()=>joinRoom($('roomCodeIn').value,$('roomPassIn').value);
-$('newRoomBtn').onclick=()=>{const code='NX-'+genId().slice(0,5);$('roomCodeIn').value=code;joinRoom(code,$('roomPassIn').value)};
+$('tabRoom').onclick=()=>{$('tabRoom').classList.add('act');$('tabDm').classList.remove('act');$('paneRoom').style.display='flex';$('paneDm').style.display='none';if(!$('roomCodeIn').dataset.prefill){$('roomCodeIn').value='';$('roomPassIn').value=''}delete $('roomCodeIn').dataset.prefill;$('roomCodeIn').focus()};
+$('joinRoomBtn').onclick=()=>joinRoom($('roomCodeIn').value,$('roomPassIn').value,false);
+$('newRoomBtn').onclick=()=>createRoom($('roomCodeIn').value,$('roomPassIn').value);
+['roomCodeIn','roomPassIn'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')joinRoom($('roomCodeIn').value,$('roomPassIn').value,false)}));
 $('roomShareBtn').onclick=()=>{const c=chatsCache.get(activeChatId);if(!c||c.type!=='room')return;
- copyTxt(location.origin+location.pathname+'#room='+encodeURIComponent(c.roomCode||c.name.slice(1)));toast('Link da sala copiado!')};
+ copyTxt(location.origin+location.pathname+'#room='+encodeURIComponent(c.roomCode||c.name.slice(1)));toast(c.roomPass?'Link copiado! Passe a senha também.':'Link da sala copiado!')};
 
 const clearReply=()=>{reply=null;$('replyBar').classList.remove('on')};$('replyX').onclick=clearReply;
 const closeMenu=()=>side.classList.remove('open');
@@ -1780,7 +1891,7 @@ async function boot(){
  const addM=location.hash.match(/add=([A-Za-z0-9-]+)/);
  if(addM){$('dialId').value=fmtId(cleanId(addM[1]));side.classList.add('open')}
  const roomM=location.hash.match(/room=([A-Za-z0-9%-]+)/);
- if(roomM){$('tabRoom').click();$('roomCodeIn').value=decodeURIComponent(roomM[1]);joinRoom(decodeURIComponent(roomM[1]))}
+ if(roomM){const rc=decodeURIComponent(roomM[1]);$('roomCodeIn').dataset.prefill='1';$('tabRoom').click();$('roomCodeIn').value=rc;joinRoom(rc,'',false)}
  else if(innerWidth<=768)side.classList.add('open');
 }
 
