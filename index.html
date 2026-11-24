@@ -99,6 +99,10 @@ summary{cursor:pointer;color:var(--ac);font-size:.8rem}
   <div class="myid" id="myid"></div><div class="row"><button class="ghost" id="copyId">Copiar ID</button><button class="ghost" id="bkBtn">Backup</button></div></section>
  <section class="panel"><label for="dialId">Conectar por ID</label><input type="text" id="dialId" placeholder="XXXX-XXXX" maxlength="9" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px"><button id="dialBtn">Conectar</button></section>
  <section class="panel"><label>Contatos</label><div id="contacts"></div></section>
+ <section class="panel"><label>Avisos</label><button class="ghost" id="ntBtn">🔔 Ativar avisos neste aparelho</button>
+  <details><summary style="font-size:.78rem;color:var(--mu);cursor:pointer">Receber com o app fechado</summary>
+   <p style="font-size:.72rem;color:var(--mu);line-height:1.5;margin:8px 0">Instale o app <b>ntfy</b> (Android/iOS), toque em “+” e assine o tópico abaixo no servidor ntfy.sh. Quando alguém te escrever enquanto você está offline, chega um aviso genérico (sem nome nem conteúdo). Abra o Nexus para ler.</p>
+   <button class="ghost" id="ntTopic">Copiar meu tópico de avisos</button></details></section>
  <details class="panel"><summary>Modo manual (sem internet)</summary>
  <section class="panel"><label>1 · Hostear conexão</label>
   <button id="hostBtn">Gerar convite</button>
@@ -152,7 +156,7 @@ const scroll=()=>{hist.scrollTop=hist.scrollHeight};
 const sys=t=>{hist.append(el('div','sys',t));scroll()};
 function toast(t){const n=el('div','toast',t);document.body.append(n);setTimeout(()=>n.remove(),3200)}
 function notify(t){if(!document.hidden)return;document.title='● Nexus | nova mensagem';if(window.Notification&&Notification.permission==='granted')try{new Notification('Nexus',{body:String(t||'').slice(0,100)})}catch{}}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)document.title='Nexus | P2P Terminal'});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){document.title='Nexus | P2P Terminal';listen()}});
 
 /* ---------- Códigos compactos ---------- */
 const b64=u=>btoa(String.fromCharCode(...u)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
@@ -169,7 +173,8 @@ const gathered=p=>new Promise(r=>{if(p.iceGatheringState==='complete')return r()
  p.addEventListener('icegatheringstatechange',f);setTimeout(r,6000)});
 
 /* ---------- Conexão ---------- */
-function setStatus(on,txt,wait){const s=$('status');s.textContent=txt||(on?'Conectado':'Desconectado');s.className='badge'+(on?' on':wait?' wait':'');inp.disabled=$('send').disabled=!on;if(on&&innerWidth>768)inp.focus()}
+function refreshIn(on){const ok=on||!!(myId&&pid&&getC()[pid]);inp.disabled=$('send').disabled=!ok;inp.placeholder=on||!ok?'Mensagem secreta...':'Offline — entrega quando o contato abrir o Nexus'}
+function setStatus(on,txt,wait){const s=$('status');s.textContent=txt||(on?'Conectado':'Desconectado');s.className='badge'+(on?' on':wait?' wait':'');refreshIn(on);if(on&&innerWidth>768)inp.focus()}
 function drop(){try{endCall()}catch{}try{renderContacts()}catch{}clearReply();try{dc&&dc.close()}catch{}try{pc&&pc.close()}catch{}dc=pc=rx=null;setStatus(false)}
 function setup(){drop();dialing=null;const p=pc=new RTCPeerConnection(CFG);
  p.ondatachannel=e=>bind(e.channel);
@@ -208,8 +213,10 @@ async function seal(id,o){const iv=crypto.getRandomValues(new Uint8Array(12)),c=
 async function unseal(id,s){const[a,b]=s.split('.');return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(a)},await ckey(id),unb64(b))))}
 const post=async(to,o)=>{const r=await fetch(RELAY+await topic(to),{method:'POST',body:await seal(to,o)});if(!r.ok)throw 0};
 async function listen(){if(!myId||!window.EventSource||!crypto.subtle)return;if(es)es.close();
- es=new EventSource(RELAY+await topic(myId)+'/sse');
- es.onmessage=async e=>{try{const m=JSON.parse(e.data);if(m.event==='message')onSig(await unseal(myId,m.message))}catch{}}}
+ es=new EventSource(RELAY+await topic(myId)+'/sse?since='+(ls.get('nx_last')||'12h'));
+ es.onmessage=async e=>{try{const m=JSON.parse(e.data);if(m.event!=='message')return;const o=await unseal(myId,m.message);
+  if(m.time&&m.time>+(ls.get('nx_last')||0))ls.set('nx_last',String(m.time));
+  if(o&&o.t==='m')inbox(o);else if(o&&o.t==='rcv')rcv(o);else if(Date.now()/1000-(m.time||0)<90)onSig(o)}catch{}}}
 async function onSig(o){if(!o||!o.from)return;const id=cleanId(o.from);
  if(o.t==='offer'){if(isOpen())return post(id,{t:'busy',from:myId});
   if(pc&&pc.signalingState==='have-local-offer'&&dialing===id&&myId<id)return;
@@ -224,6 +231,24 @@ async function dial(id){id=cleanId(id);if(id.length!==8)return toast('ID inváli
   setTimeout(()=>{if(pc===p&&!isOpen()){toast('Sem resposta.');drop()}},45000)}
  catch(e){toast('Falha ao conectar (sem internet?)');console.error(e);drop()}}
 
+/* ---------- Mensagens offline (caixa de entrada cifrada no relay) ---------- */
+const atopic=async id=>'nxa'+b64(await sha('alert:'+id)).slice(0,22).replace(/[-_]/g,'x');
+const ping=async to=>{try{await fetch(RELAY+await atopic(to),{method:'POST',headers:{Title:'Nexus'},body:'💬 Nova mensagem no Nexus'})}catch{}};
+async function offline(text){if(!(myId&&pid&&getC()[pid]))return;if(text.length>1500)return toast('Offline: máximo de 1500 caracteres.');
+ const to=pid,m={id:uid(),name:me(),text,ts:Date.now()};if(reply){m.re=reply;clearReply()}
+ addText(m,true);inp.value='';const b=ids[m.id];if(b)b.st.textContent='⏳';
+ try{await post(to,{t:'m',from:myId,name:m.name,id:m.id,text,ts:m.ts,re:m.re});if(b)b.st.textContent='↗';ping(to)}
+ catch{if(b)b.st.textContent='⚠';toast('Não foi possível enviar (sem internet?)')}}
+function inbox(o){const id=cleanId(o.from||''),c=getC();if(id.length!==8||!c[id]||!o.id)return;
+ const mid=String(o.id).slice(0,16);if(getH(id).some(x=>x.id===mid))return;
+ const m={id:mid,name:String(o.name||c[id].name).slice(0,24),text:String(o.text||'').slice(0,4000),ts:Math.min(+o.ts||Date.now(),Date.now())};
+ if(o.re&&o.re.text)m.re={name:String(o.re.name||'').slice(0,24),text:String(o.re.text).slice(0,80)};
+ if(pid===id)addText(m,false);else{const h=getH(id);h.push({...m,self:false});ls.set('nx_h_'+id,JSON.stringify(h.slice(-500)))}
+ c[id].ts=Date.now();ls.set('nx_contacts',JSON.stringify(c));renderContacts();
+ post(id,{t:'rcv',from:myId,id:mid}).catch(()=>{});
+ if(document.hidden)notify(m.name+': '+m.text);else if(pid!==id)toast('💬 '+m.name+': '+m.text.slice(0,40))}
+function rcv(o){const id=cleanId(o.from||'');if(pid!==id)return;const b=ids[o.id];if(b&&b.st&&b.classList.contains('self'))b.st.textContent='✓✓'}
+
 /* ---------- Mensagens ---------- */
 function bubble(self,name,ts){const b=el('div','msg '+(self?'self':'other')),h=el('div','mh');h.append(el('span','',name),el('span','',fmt(ts)));b.append(h);hist.append(b);return b}
 function rxRender(b){const n=(b.me?1:0)+(b.pe?1:0);b.rx.textContent=n?'❤️'+(n>1?' '+n:''):''}
@@ -233,7 +258,7 @@ function persist(m,self){if(!pid)return;const h=getH(pid);h.push({...m,self});ls
 function updH(id,fn){if(pid)ls.set('nx_h_'+pid,JSON.stringify(getH(pid).map(m=>m.id===id?fn(m):m).filter(Boolean)))}
 function fill(n,t){n.replaceChildren();t.split(/(https?:\/\/[^\s<]+)/g).forEach((x,i)=>{if(i%2){const a=el('a','',x);a.href=x;a.target='_blank';a.rel='noopener noreferrer';a.style.color='inherit';n.append(a)}else n.append(x)})}
 function showChat(id,name){if(!isOpen())pid=id;hist.replaceChildren();lastDay='';for(const k in ids)delete ids[k];$('peerName').textContent=name;
- const h=getH(id);h.forEach(m=>addText(m,m.self,false));if(!h.length)sys('Sem mensagens ainda.');scroll()}
+ const h=getH(id);h.forEach(m=>addText(m,m.self,false));if(!h.length)sys('Sem mensagens ainda.');scroll();refreshIn(isOpen())}
 const ini=n=>(n||'?').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
 function renderContacts(){const c=$('contacts'),all=getC(),k=Object.keys(all).sort((a,b)=>all[b].ts-all[a].ts);c.replaceChildren();
  if(!k.length)c.append(el('span','sys','Nenhum contato ainda'));
@@ -252,7 +277,7 @@ function addText(m,self,save=true){const day=new Date(m.ts).toDateString();if(da
   dl.onclick=()=>{if(isOpen()&&confirm('Apagar para todos?')){tx({t:'del',id:m.id});b.remove();delete ids[m.id];updH(m.id,()=>null)}};meta.append(ed,dl)}b.append(meta);
  ids[m.id]=b;b.title='Toque duas vezes para reagir';
  b.ondblclick=()=>{b.me=!b.me;rxRender(b);tx({t:'rx',id:m.id,on:b.me})};scroll();if(save)persist(m,self)}
-function send(){const text=inp.value.trim();if(!text||!isOpen())return;const m={id:uid(),name:me(),text,ts:Date.now()};if(reply){m.re=reply;clearReply()}tx({t:'m',...m});addText(m,true);inp.value=''}
+function send(){const text=inp.value.trim();if(!text)return;if(!isOpen())return offline(text);const m={id:uid(),name:me(),text,ts:Date.now()};if(reply){m.re=reply;clearReply()}tx({t:'m',...m});addText(m,true);inp.value=''}
 function onMsg(e){
  if(typeof e.data!=='string'){if(rx){rx.parts.push(e.data);rx.got+=e.data.byteLength;rx.f.prog(rx.got/rx.size)}return}
  let d;try{d=JSON.parse(e.data)}catch{return}
@@ -372,6 +397,9 @@ $('copyId').onclick=()=>copyTxt(fmtId(myId));$('dialBtn').onclick=()=>dial($('di
 $('dialId').addEventListener('keydown',e=>{if(e.key==='Enter')dial($('dialId').value)});
 const applyTh=()=>{document.documentElement.dataset.theme=ls.get('nx_theme')||'dark'};applyTh();
 $('thBtn').onclick=()=>{ls.set('nx_theme',(ls.get('nx_theme')||'dark')==='dark'?'light':'dark');applyTh()};
+const ntSt=()=>{$('ntBtn').textContent=window.Notification&&Notification.permission==='granted'?'🔔 Avisos ativados':'🔔 Ativar avisos neste aparelho'};ntSt();
+$('ntBtn').onclick=async()=>{if(!window.Notification)return toast('Este navegador não suporta notificações.');if(Notification.permission==='denied')return toast('Bloqueado: libere nas configurações do site.');await Notification.requestPermission();ntSt()};
+$('ntTopic').onclick=async()=>{if(myId)copyTxt(await atopic(myId))};
 if(!window.MediaRecorder)$('mic').style.display='none';
 if(!myId)$('login').classList.add('on');else boot();
 </script>
