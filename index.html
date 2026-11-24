@@ -6,85 +6,204 @@
 <meta name="theme-color" content="#070a12">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Nexus | P2P Terminal</title>
+<meta name="description" content="Nexus — Chat P2P criptografado.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23070a12'/%3E%3Cpath d='M16 48V16h7l18 22V16h7v32h-7L23 26v22z' fill='%2300f0ff'/%3E%3C/svg%3E">
+<title>Nexus | P2P</title>
 <style>
-:root{--bg:#070a12;--panel:#0f1524;--input:#161e33;--line:#24304d;--ac:#00f0ff;--ac2:#ff2bd6;--tx:#e2e8f0;--mu:#8a98b5;--bad:#ff4757;--ok:#2ed573}
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,'Segoe UI',sans-serif}
-[data-theme=light]{--bg:#eef2f8;--panel:#fff;--input:#e8edf6;--line:#d3dbe9;--tx:#0f172a;--mu:#55657f;--ac:#0089b3}
+:root{
+ --bg:#070a12;--panel:#0f1524;--input:#161e33;--line:#24304d;
+ --ac:#00f0ff;--ac2:#ff2bd6;--tx:#e2e8f0;--mu:#8a98b5;
+ --bad:#ff4757;--ok:#2ed573;--warn:#f5a623;--shadow:0 10px 30px #00000080
+}
+[data-theme=light]{
+ --bg:#eef2f8;--panel:#ffffff;--input:#e8edf6;--line:#cfd9e8;
+ --tx:#0f172a;--mu:#55657f;--ac:#0082a8;--ac2:#c81eb0;--shadow:0 10px 28px #0f172a1f
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
 html,body{height:100%}
 body{background:var(--bg);color:var(--tx);display:flex;height:100dvh;overflow:hidden}
-h1,.badge,label,.mh,.sys{font-family:ui-monospace,Menlo,Consolas,monospace}
-h1{color:var(--ac);font-size:1.4rem;letter-spacing:4px;text-shadow:0 0 12px var(--ac),2px 0 var(--ac2);margin-bottom:12px}
-h1 span{color:var(--ac2);font-size:.8rem;margin-left:6px;text-shadow:none}
-.side{width:330px;flex:none;background:var(--panel);border-right:1px solid var(--line);padding:18px;overflow-y:auto;z-index:30;transition:transform .25s}
-.panel{background:var(--input);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:14px;display:flex;flex-direction:column;gap:8px}
-label{font-size:.72rem;color:var(--mu);text-transform:uppercase;letter-spacing:1px}
-input[type=text],textarea{background:#0a0e1a;border:1px solid var(--line);color:var(--tx);padding:10px;border-radius:8px;font-size:.88rem;outline:none;resize:none;width:100%}
-textarea{font-family:ui-monospace,Menlo,monospace;font-size:.7rem}
-input:focus,textarea:focus{border-color:var(--ac);box-shadow:0 0 0 2px #00f0ff22}
-button{background:var(--ac);color:#001418;border:0;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer;transition:.15s;width:100%}
-button:hover:not(:disabled){filter:brightness(1.15)}
+h1,.badge,label,.mh,.sys,.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+h1{color:var(--ac);font-size:1.3rem;letter-spacing:3px;text-shadow:0 0 12px #00f0ff66,2px 0 var(--ac2);margin-bottom:10px}
+h1 span{color:var(--ac2);font-size:.74rem;margin-left:5px;text-shadow:none}
+
+/* Sidebar */
+.side{width:348px;flex:none;background:var(--panel);border-right:1px solid var(--line);padding:16px;overflow-y:auto;z-index:30;transition:transform .25s;display:flex;flex-direction:column;gap:12px}
+.panel{background:var(--input);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+label{font-size:.7rem;color:var(--mu);text-transform:uppercase;letter-spacing:1px;font-weight:700}
+input[type=text],input[type=password],textarea,select{background:#0a0e1a;border:1px solid var(--line);color:var(--tx);padding:9px 10px;border-radius:8px;font-size:.86rem;outline:none;resize:none;width:100%}
+[data-theme=light] input[type=text],[data-theme=light] input[type=password],[data-theme=light] textarea,[data-theme=light] select{background:#f7f9fc}
+textarea.code{font-family:ui-monospace,Menlo,monospace;font-size:.7rem}
+input:focus,textarea:focus,select:focus{border-color:var(--ac);box-shadow:0 0 0 2px #00f0ff26}
+button{background:var(--ac);color:#001418;border:0;padding:9px 12px;border-radius:8px;font-weight:700;cursor:pointer;transition:.15s;width:100%;font-size:.84rem}
+button:hover:not(:disabled){filter:brightness(1.12)}
 button:disabled{opacity:.4;cursor:not-allowed}
 button.ghost{background:transparent;border:1px solid var(--ac);color:var(--ac)}
-button.ghost:hover{background:#00f0ff18}
-.row{display:flex;gap:8px}
-.badge{display:inline-block;padding:4px 10px;border-radius:12px;font-size:.72rem;font-weight:700;background:var(--bad);color:#fff;margin-bottom:12px}
-.badge.on{background:var(--ok);color:#00220c}.badge.wait{background:#f5a623;color:#201400}
+button.ghost:hover:not(:disabled){background:#00f0ff18}
+button.danger{background:transparent;border:1px solid var(--bad);color:var(--bad)}
+button.danger:hover:not(:disabled){background:#ff47571a}
+button.sm{padding:5px 9px;font-size:.75rem;width:auto}
+.row{display:flex;gap:7px;align-items:center}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg);padding:3px;border-radius:9px;border:1px solid var(--line)}
+.tabs button{background:none;color:var(--mu);padding:6px;border-radius:6px;font-size:.76rem}
+.tabs button.act{background:var(--ac);color:#001418}
+
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:12px;font-size:.71rem;font-weight:700;background:var(--bad);color:#fff;width:fit-content}
+.badge.on{background:var(--ok);color:#00220c}.badge.wait{background:var(--warn);color:#201400}
 .x{display:none;width:auto;background:none;color:var(--mu);font-size:1.3rem;padding:0;margin-left:auto}
+
+/* Main */
 main{flex:1;display:flex;flex-direction:column;min-width:0;background:radial-gradient(circle at top,var(--input),var(--bg));position:relative}
-header{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
-header b{color:var(--ac);letter-spacing:3px}header button{width:auto}#menuBtn{display:none}#q{width:170px;margin-left:auto;padding:6px 12px;border-radius:16px}
-#typing{color:var(--ac2);font-size:.75rem;font-family:ui-monospace,monospace;margin-left:0}
-#hist{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
-.msg{max-width:min(85%,560px);padding:10px 14px;border-radius:14px;line-height:1.4;font-size:.94rem;word-break:break-word;animation:in .2s}
-@keyframes in{from{opacity:0;transform:translateY(6px)}}
+header{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line)}
+header b{color:var(--ac);letter-spacing:1.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+header button{width:auto;padding:6px 9px;font-size:.82rem}
+#menuBtn{display:none}
+#peerSub{font-size:.72rem;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+#q{width:145px;margin-left:auto;padding:6px 12px;border-radius:16px;font-size:.8rem}
+#qCount{font-size:.7rem;color:var(--mu);display:none}
+#typing{color:var(--ac2);font-size:.74rem;font-family:ui-monospace,monospace;white-space:nowrap}
+#pingBadge{display:none;font-size:.71rem;padding:3px 8px;border-radius:10px;border:1px solid var(--line);cursor:pointer;background:var(--input);color:var(--ok);white-space:nowrap}
+#pingBadge.on{display:inline-flex;align-items:center;gap:4px}
+
+#pinBar{display:none;align-items:center;gap:10px;padding:7px 14px;background:var(--input);border-bottom:1px solid var(--line);font-size:.8rem;cursor:pointer}
+#pinBar.on{display:flex}
+#pinBar span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pinBar b{color:var(--mu);padding:0 5px}
+
+#hist{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:11px;scroll-behavior:smooth}
+.msg{max-width:min(86%,600px);padding:10px 14px;border-radius:14px;line-height:1.45;font-size:.93rem;word-break:break-word;animation:in .16s;position:relative}
+@keyframes in{from{opacity:0;transform:translateY(5px)}}
+.msg.hl{box-shadow:0 0 0 2px var(--ac2)}
 .self{align-self:flex-end;background:linear-gradient(135deg,#00f0ff,#00b8d4);color:#00161a;border-bottom-right-radius:4px}
 .other{align-self:flex-start;background:var(--panel);border:1px solid var(--line);border-bottom-left-radius:4px}
-.mh{display:flex;justify-content:space-between;gap:16px;font-size:.68rem;opacity:.7;margin-bottom:3px;font-weight:700}
+.mh{display:flex;justify-content:space-between;gap:16px;font-size:.68rem;opacity:.75;margin-bottom:3px;font-weight:700}
 .tx{white-space:pre-wrap}
-.meta{display:flex;justify-content:flex-end;gap:6px;font-size:.7rem;opacity:.75;min-height:1em;margin-top:2px}
-.sys{align-self:center;font-size:.72rem;color:var(--ac);border:1px solid #00f0ff44;border-radius:10px;padding:5px 12px;text-align:center}
-.pv{display:block;max-width:100%;max-height:260px;border-radius:8px;margin:6px 0;cursor:zoom-in}
-.bar{height:5px;background:#0003;border-radius:3px;margin-top:6px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--ac2);transition:width .1s}
-.fi{font-size:.85rem}audio{max-width:100%;height:36px}
-.dl{display:inline-block;margin-top:6px;color:inherit;font-weight:700;font-size:.85rem}
-footer{display:flex;gap:8px;align-items:center;padding:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom));background:var(--panel);border-top:1px solid var(--line)}
-footer input{flex:1;border-radius:22px;padding:12px 16px}
-footer .ic{width:42px;height:42px;border-radius:50%;padding:0;font-size:1.1rem;flex:none;display:grid;place-items:center;cursor:pointer;border:1px solid var(--ac);color:var(--ac);background:none}
+.tx.action{font-style:italic;opacity:.92}
+.tx code{background:#00000028;padding:1px 5px;border-radius:4px;font-family:ui-monospace,Menlo,monospace;font-size:.84em}
+.codewrap{position:relative;margin:6px 0}
+.codewrap pre{background:#050811;color:#e2e8f0;padding:10px;padding-top:26px;border-radius:8px;overflow-x:auto;font-size:.79rem;border:1px solid #ffffff22}
+.codewrap pre code{background:none;padding:0;color:inherit}
+.codewrap .cpcode{position:absolute;top:4px;right:6px;width:auto;padding:2px 7px;font-size:.67rem;background:#ffffff1c;color:#e2e8f0;border-radius:5px}
+
+.meta{display:flex;align-items:center;justify-content:flex-end;gap:7px;font-size:.72rem;opacity:.82;min-height:1.1em;margin-top:4px;flex-wrap:wrap}
+.meta .act{cursor:pointer;opacity:.72;transition:.12s;user-select:none}
+.meta .act:hover{opacity:1;transform:scale(1.12)}
+.st.read{color:#002f3f;font-weight:900;text-shadow:0 0 4px #ffffffaa}
+.rxs{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.rx-pill{font-size:.76rem;background:#00000024;padding:2px 7px;border-radius:12px;cursor:pointer;border:1px solid transparent;user-select:none}
+.rx-pill.mine{border-color:var(--ac2);background:#ff2bd628}
+.ttl-tag{font-size:.68rem;padding:1px 6px;border-radius:8px;background:#00000026;font-family:ui-monospace,monospace}
+.sys{align-self:center;font-size:.72rem;color:var(--ac);border:1px solid #00f0ff44;background:#00f0ff0a;border-radius:10px;padding:5px 12px;text-align:center;max-width:90%}
+
+/* Polls */
+.poll{display:flex;flex-direction:column;gap:6px;margin-top:4px;min-width:230px}
+.poll-q{font-weight:700;font-size:.94rem;margin-bottom:2px}
+.poll-opt{position:relative;border:1px solid #ffffff30;background:#00000020;border-radius:8px;padding:7px 10px;cursor:pointer;overflow:hidden;display:flex;justify-content:space-between;gap:10px;font-size:.84rem;transition:.15s}
+.self .poll-opt{border-color:#00161a33;background:#00161a14}
+.poll-opt.voted{border-color:var(--ac2);font-weight:700}
+.poll-opt .pfill{position:absolute;inset:0 auto 0 0;background:#ff2bd638;pointer-events:none;transition:width .25s}
+.poll-opt span{position:relative;z-index:1}
+.poll-ft{font-size:.7rem;opacity:.75;margin-top:2px}
+
+/* Media & Files */
+.pv{display:block;max-width:100%;max-height:280px;border-radius:8px;margin:6px 0;cursor:zoom-in}
+video.pv{cursor:default;background:#000}
+.bar{height:6px;background:#0003;border-radius:3px;margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--ac2);transition:width .08s}
+.fi{font-size:.84rem;display:flex;align-items:center;justify-content:space-between;gap:8px}
+audio{max-width:100%;height:36px}
+.dl{display:inline-block;margin-top:6px;color:inherit;font-weight:700;font-size:.83rem}
+
+/* Footer & Recorder */
+footer{display:flex;gap:6px;align-items:flex-end;padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom));background:var(--panel);border-top:1px solid var(--line)}
+footer textarea{flex:1;border-radius:20px;padding:10px 14px;min-height:42px;max-height:130px;line-height:1.35;font-size:.91rem;overflow-y:auto}
+footer .ic{width:39px;height:39px;border-radius:50%;padding:0;font-size:1.02rem;flex:none;display:grid;place-items:center;cursor:pointer;border:1px solid var(--ac);color:var(--ac);background:none}
 footer .ic.rec{background:var(--bad);border-color:var(--bad);color:#fff;animation:pulse 1s infinite}
+footer .ic.on{background:var(--ac2);border-color:var(--ac2);color:#fff}
 @keyframes pulse{50%{opacity:.5}}
 #send{background:var(--ac);color:#001418}
-#emoji{position:absolute;bottom:72px;left:12px;background:var(--panel);border:1px solid var(--ac);border-radius:12px;padding:8px;display:grid;grid-template-columns:repeat(8,1fr);gap:2px;z-index:10}
-#emoji[hidden]{display:none}#emoji span{font-size:1.4rem;padding:4px;cursor:pointer;border-radius:6px;text-align:center}#emoji span:hover{background:var(--input)}
-.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid var(--ac2);padding:10px 18px;border-radius:10px;z-index:99;font-size:.85rem}
+#recBar{display:none;align-items:center;gap:10px;padding:8px 14px;background:#ff47571f;border-top:1px solid var(--bad);font-size:.84rem}
+#recBar.on{display:flex}
+#recBar .dot{width:10px;height:10px;border-radius:50%;background:var(--bad);animation:pulse 1s infinite}
 
-.quote{border-left:3px solid var(--ac2);padding:2px 8px;margin-bottom:4px;font-size:.78rem;opacity:.8}
-#replyBar{display:none;justify-content:space-between;padding:6px 16px;background:var(--input);border-top:1px solid var(--line);font-size:.8rem;color:var(--mu)}#replyBar.on{display:flex}
-.ct{display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;cursor:pointer;font-size:.85rem}.ct:hover{background:#00f0ff14}
-.av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#001418;flex:none}.av.big{width:120px;height:120px;font-size:2.6rem}
-.ctw{flex:1;min-width:0;display:flex;flex-direction:column}.ctw small{color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.myid{font:700 1.5rem ui-monospace,monospace;letter-spacing:3px;color:var(--ac);text-align:center;user-select:all}
-summary{cursor:pointer;color:var(--ac);font-size:.8rem}
+#emoji,#rxPop{position:absolute;background:var(--panel);border:1px solid var(--ac);border-radius:12px;padding:8px;z-index:25;box-shadow:var(--shadow)}
+#emoji{bottom:66px;left:12px;display:grid;grid-template-columns:repeat(8,1fr);gap:2px}
+#rxPop{display:flex;gap:4px;padding:5px 8px;border-radius:20px}
+#emoji[hidden],#rxPop[hidden]{display:none}
+#emoji span,#rxPop span{font-size:1.32rem;padding:4px;cursor:pointer;border-radius:6px;text-align:center}
+#emoji span:hover,#rxPop span:hover{background:var(--input);transform:scale(1.15)}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid var(--ac2);padding:10px 18px;border-radius:10px;z-index:140;font-size:.84rem;box-shadow:var(--shadow);max-width:92vw;text-align:center}
+.quote{border-left:3px solid var(--ac2);padding:3px 8px;margin-bottom:5px;font-size:.78rem;opacity:.86;background:#00000018;border-radius:0 6px 6px 0}
+#replyBar{display:none;justify-content:space-between;align-items:center;padding:6px 16px;background:var(--input);border-top:1px solid var(--line);font-size:.8rem;color:var(--mu)}
+#replyBar.on{display:flex}
+
+/* Contact / Room List */
+.ct{display:flex;align-items:center;gap:9px;padding:8px;border-radius:10px;cursor:pointer;font-size:.84rem;position:relative;border:1px solid transparent}
+.ct:hover{background:#00f0ff14}.ct.act{background:#00f0ff1c;border-color:#00f0ff44}
+.av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#001418;flex:none;font-size:.82rem}
+.av.room{border-radius:10px;background:linear-gradient(135deg,var(--ac2),#7b2ff7);color:#fff}
+.av.big{width:96px;height:96px;font-size:2.2rem}
+.ctw{flex:1;min-width:0;display:flex;flex-direction:column}
+.ctw small{color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.74rem}
+.unread{background:var(--ac2);color:#fff;font-size:.67rem;font-weight:700;min-width:19px;height:19px;border-radius:10px;display:grid;place-items:center;padding:0 5px}
+.myid{font:700 1.4rem ui-monospace,monospace;letter-spacing:3px;color:var(--ac);text-align:center;user-select:all}
+summary{cursor:pointer;color:var(--ac);font-size:.78rem;font-weight:600}
 .btn{display:block;padding:10px 14px;border-radius:8px;text-align:center;cursor:pointer;border:1px solid var(--ac);color:var(--ac);font-weight:700}
-#login{position:fixed;inset:0;background:var(--bg);z-index:100;display:none;place-items:center;padding:20px}#login.on{display:grid}
-.lbox{max-width:360px;display:flex;flex-direction:column;gap:12px;text-align:center;color:var(--mu);font-size:.9rem}
-:focus-visible{outline:2px solid var(--ac);outline-offset:2px}button{-webkit-tap-highlight-color:transparent}
-#call{position:fixed;inset:0;z-index:50;display:none;background:radial-gradient(circle at top,#12213f,#05070d);color:#fff}#call.on{display:block}
-#rv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;visibility:hidden}
-#call[data-s=in] #rv{visibility:hidden!important}
-#lv{position:absolute;right:14px;top:calc(14px + env(safe-area-inset-top));width:96px;aspect-ratio:3/4;object-fit:cover;border-radius:12px;border:2px solid var(--ac);transform:scaleX(-1);z-index:2;background:#000}
-#cInfo{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;pointer-events:none;text-shadow:0 2px 8px #000;font-size:1.3rem}
-#call.vid #cInfo{justify-content:flex-start;padding-top:calc(24px + env(safe-area-inset-top))}#call.vid .av{display:none}#cSt{font-size:1rem;opacity:.85;font-variant-numeric:tabular-nums}
-.cbar{position:absolute;left:0;right:0;bottom:calc(28px + env(safe-area-inset-bottom));display:flex;justify-content:center;gap:14px;z-index:3}
-.cbar button{width:58px;height:58px;border-radius:50%;padding:0;font-size:1.4rem;background:#ffffff2a;color:#fff;backdrop-filter:blur(8px)}.cbar .ok{background:var(--ok)}.cbar .no{background:var(--bad)}
+
+/* Modals */
+.modal{position:fixed;inset:0;background:#000000c2;backdrop-filter:blur(5px);z-index:90;display:none;place-items:center;padding:14px}
+.modal.on{display:grid}
+.mbox{width:100%;max-width:460px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;max-height:92dvh;overflow-y:auto;box-shadow:var(--shadow)}
+.mbox h2{font-size:1rem;color:var(--ac);display:flex;justify-content:space-between;align-items:center}
+.mbox h2 button{width:auto;padding:2px 8px;background:none;color:var(--mu);font-size:1.1rem}
+.sas{font-size:1.5rem;text-align:center;letter-spacing:6px;padding:10px;background:var(--input);border-radius:10px;border:1px dashed var(--ac)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat-card{background:var(--input);padding:8px 10px;border-radius:8px;font-size:.76rem;color:var(--mu)}
+.stat-card b{display:block;color:var(--ac);font-size:.92rem;margin-top:2px}
+.peer-list{display:flex;flex-direction:column;gap:6px}
+.peer-chip{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border-radius:8px;background:var(--input);font-size:.8rem}
+
+/* Login & Lock */
+#login,#lockScreen{position:fixed;inset:0;background:var(--bg);z-index:110;display:none;place-items:center;padding:20px}
+#login.on,#lockScreen.on{display:grid}
+.lbox{width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px;text-align:center;color:var(--mu);font-size:.88rem;background:var(--panel);border:1px solid var(--line);padding:24px;border-radius:16px}
+
+#lightbox img{max-width:95vw;max-height:88dvh;border-radius:10px;box-shadow:0 10px 40px #000}
+#dropZone{position:absolute;inset:0;background:#00f0ff1f;border:3px dashed var(--ac);z-index:40;display:none;place-items:center;font-size:1.15rem;font-weight:700;color:var(--ac);backdrop-filter:blur(2px);pointer-events:none}
+#dropZone.on{display:grid}
+
+/* Whiteboard */
+#wbBox{max-width:800px}
+#wbCanvas{width:100%;aspect-ratio:16/10;background:#0a0f1d;border:1px solid var(--line);border-radius:10px;touch-action:none;cursor:crosshair}
+.swatch{width:24px;height:24px;border-radius:50%;border:2px solid #fff4;cursor:pointer;padding:0;flex:none}
+.swatch.act{border-color:#fff;transform:scale(1.18)}
+
+/* Calls (DM & Multi-Peer Mesh Grid) */
+#call{position:fixed;inset:0;z-index:70;display:none;flex-direction:column;background:radial-gradient(circle at top,#12213f,#05070d);color:#fff}
+#call.on{display:flex}
+#callTop{display:flex;justify-content:space-between;align-items:center;padding:calc(12px + env(safe-area-inset-top)) 16px 10px;z-index:3;background:linear-gradient(#000a,transparent)}
+#callGrid{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;padding:10px 14px 96px;align-items:center;justify-items:center;overflow-y:auto}
+.ctile{position:relative;width:100%;height:100%;min-height:180px;max-height:100%;background:#0a1020;border:1px solid #ffffff22;border-radius:14px;overflow:hidden;display:grid;place-items:center}
+.ctile video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
+.ctile video.mirror{transform:scaleX(-1)}
+#call[data-s=in] .ctile video{visibility:hidden}
+#call[data-s=in] .ctile.hasvid .cav{display:flex}
+.ctile .cname{position:absolute;left:10px;bottom:10px;background:#00000099;padding:3px 9px;border-radius:8px;font-size:.78rem;z-index:2}
+.ctile .cav{display:flex;flex-direction:column;align-items:center;gap:8px;z-index:1}
+.ctile.hasvid .cav{display:none}
+.cbar{position:absolute;left:0;right:0;bottom:calc(22px + env(safe-area-inset-bottom));display:flex;justify-content:center;gap:12px;z-index:4}
+.cbar button{width:54px;height:54px;border-radius:50%;padding:0;font-size:1.3rem;background:#ffffff2a;color:#fff;backdrop-filter:blur(8px)}
+.cbar .ok{background:var(--ok)}.cbar .no{background:var(--bad)}
 #call[data-s=in] #cCtl,#call[data-s=out] #cIn,#call[data-s=act] #cIn{display:none}
-@media(max-width:768px){input[type=text]{font-size:16px}}
+
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+button{-webkit-tap-highlight-color:transparent}
 .scrim{display:none}
-::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+::-webkit-scrollbar{width:7px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
 @media(max-width:768px){
- #menuBtn{display:block}.x{display:block}#q{width:110px}
- footer{gap:5px;padding:8px}footer .ic{width:36px;height:36px}footer input{min-width:0;padding:10px 12px}
- .side{position:fixed;inset:0 auto 0 0;width:86%;max-width:360px;transform:translateX(-105%);box-shadow:6px 0 24px #000c}
+ input[type=text],input[type=password],textarea{font-size:16px}
+ #menuBtn,.x{display:block}#q{width:90px}
+ footer{gap:4px;padding:8px}footer .ic{width:34px;height:34px;font-size:.92rem}
+ .side{position:fixed;inset:0 auto 0 0;width:88%;max-width:360px;transform:translateX(-105%);box-shadow:6px 0 24px #000c}
  .side.open{transform:none}.side.open~.scrim{display:block;position:fixed;inset:0;background:#0009;z-index:20}
  #emoji{grid-template-columns:repeat(6,1fr)}
 }
@@ -92,316 +211,1600 @@ summary{cursor:pointer;color:var(--ac);font-size:.8rem}
 </style>
 </head>
 <body>
+
 <aside class="side" id="side">
- <div style="display:flex"><h1>NEXUS<span>//P2P</span></h1><button class="x" id="xBtn" aria-label="Fechar menu">✕</button></div>
+ <div style="display:flex;align-items:center"><h1>NEXUS<span>//P2P</span></h1><button class="x" id="xBtn" aria-label="Fechar menu">✕</button></div>
  <div id="status" class="badge">Desconectado</div>
- <section class="panel"><label for="name">Sua conta</label><input type="text" id="name" maxlength="24" placeholder="Seu nome" autocomplete="off">
-  <div class="myid" id="myid"></div><div class="row"><button class="ghost" id="copyId">Copiar ID</button><button class="ghost" id="bkBtn">Backup</button></div></section>
- <section class="panel"><label for="dialId">Conectar por ID</label><input type="text" id="dialId" placeholder="XXXX-XXXX" maxlength="9" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px"><button id="dialBtn">Conectar</button></section>
- <section class="panel"><label>Contatos</label><div id="contacts"></div></section>
- <section class="panel"><label>Avisos</label><button class="ghost" id="ntBtn">🔔 Ativar avisos neste aparelho</button>
-  <details><summary style="font-size:.78rem;color:var(--mu);cursor:pointer">Receber com o app fechado</summary>
-   <p style="font-size:.72rem;color:var(--mu);line-height:1.5;margin:8px 0">Instale o app <b>ntfy</b> (Android/iOS), toque em “+” e assine o tópico abaixo no servidor ntfy.sh. Quando alguém te escrever enquanto você está offline, chega um aviso genérico (sem nome nem conteúdo). Abra o Nexus para ler.</p>
-   <button class="ghost" id="ntTopic">Copiar meu tópico de avisos</button></details></section>
- <details class="panel"><summary>Modo manual (sem internet)</summary>
- <section class="panel"><label>1 · Hostear conexão</label>
-  <button id="hostBtn">Gerar convite</button>
-  <textarea id="offerOut" rows="3" readonly placeholder="O convite aparece aqui"></textarea>
-  <button class="ghost" data-copy="offerOut">Copiar convite</button></section>
- <section class="panel"><label for="codeIn">2 · Colar código do amigo</label>
-  <textarea id="codeIn" rows="3" placeholder="Cole o convite (ou a resposta) aqui"></textarea>
-  <button id="procBtn">Processar código</button>
-  <textarea id="ansOut" rows="3" readonly placeholder="Sua resposta aparece aqui (se você for o convidado)"></textarea>
-  <button class="ghost" data-copy="ansOut">Copiar resposta</button></section>
+
+ <section class="panel">
+  <label for="name">Sua conta</label>
+  <input type="text" id="name" maxlength="24" placeholder="Seu nome" autocomplete="off">
+  <div class="myid" id="myid"></div>
+  <div class="row">
+   <button class="ghost sm" style="flex:1" id="copyId">Copiar ID</button>
+   <button class="ghost sm" style="flex:1" id="shareId">Link</button>
+  </div>
+  <div class="row">
+   <button class="ghost sm" style="flex:1" id="bkBtn">Backup</button>
+   <button class="ghost sm" style="flex:1" id="diagOpen">Segurança</button>
+   <button class="ghost sm" id="lockBtn" title="Bloquear">🔒</button>
+  </div>
+ </section>
+
+ <section class="panel">
+  <div class="tabs">
+   <button id="tabDm" class="act">👤 Privado</button>
+   <button id="tabRoom">👥 Sala</button>
+  </div>
+  <div id="paneDm" style="display:flex;flex-direction:column;gap:7px">
+   <input type="text" id="dialId" placeholder="XXXX-XXXX" maxlength="9" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px">
+   <button id="dialBtn">Conectar</button>
+  </div>
+  <div id="paneRoom" style="display:none;flex-direction:column;gap:7px">
+   <input type="text" id="roomCodeIn" placeholder="Código da sala" maxlength="24" autocomplete="off" style="text-transform:uppercase;letter-spacing:1.5px">
+   <input type="password" id="roomPassIn" placeholder="Senha (opcional)" autocomplete="off">
+   <div class="row">
+    <button id="joinRoomBtn">Entrar</button>
+    <button class="ghost" id="newRoomBtn">Nova</button>
+   </div>
+  </div>
+ </section>
+
+ <section class="panel">
+  <label>Conversas</label>
+  <div id="contacts"></div>
+ </section>
+
+ <section class="panel">
+  <label>Avisos</label>
+  <div class="row">
+   <button class="ghost sm" style="flex:1" id="ntBtn">🔔 Avisos</button>
+   <button class="ghost sm" id="sndBtn" title="Som de notificação">🔊</button>
+  </div>
+  <details>
+   <summary style="font-size:.74rem;color:var(--mu)">Receber com o app fechado</summary>
+   <p style="font-size:.71rem;color:var(--mu);line-height:1.45;margin:6px 0">Instale o app <b>ntfy</b> e assine o tópico abaixo em ntfy.sh para alertas offline.</p>
+   <button class="ghost sm" style="width:100%" id="ntTopic">Copiar meu tópico</button>
+  </details>
+ </section>
+
+ <details class="panel">
+  <summary>Modo manual</summary>
+  <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+   <label>1 · Hostear conexão</label>
+   <button id="hostBtn">Gerar convite</button>
+   <textarea id="offerOut" class="code" rows="3" readonly placeholder="O convite aparece aqui"></textarea>
+   <button class="ghost sm" style="width:100%" data-copy="offerOut">Copiar convite</button>
+   <label style="margin-top:4px">2 · Colar código do amigo</label>
+   <textarea id="codeIn" class="code" rows="3" placeholder="Cole convite ou resposta aqui"></textarea>
+   <button id="procBtn">Processar código</button>
+   <textarea id="ansOut" class="code" rows="3" readonly placeholder="Sua resposta aparece aqui"></textarea>
+   <button class="ghost sm" style="width:100%" data-copy="ansOut">Copiar resposta</button>
+  </div>
  </details>
- <div class="row"><button class="ghost" id="byeBtn">Desconectar</button><button class="ghost" id="clrBtn">Limpar</button><button class="ghost" id="expBtn">Exportar</button></div>
+
+ <div class="row">
+  <button class="ghost sm" style="flex:1" id="byeBtn">Desconectar</button>
+  <button class="ghost sm" style="flex:1" id="clrBtn">Limpar</button>
+  <button class="ghost sm" style="flex:1" id="expBtn">Exportar</button>
+ </div>
 </aside>
-<div id="login"><div class="lbox"><h1>NEXUS</h1><p>Crie sua conta neste aparelho. Seu ID curto permite que amigos conectem com 1 clique, sem trocar códigos.</p>
- <input type="text" id="lname" maxlength="24" placeholder="Seu nome" autocomplete="off"><button id="lgo">Criar conta</button>
- <label class="btn">Importar conta (.json)<input type="file" id="limp" accept=".json" hidden></label></div></div>
+
+<div id="login">
+ <div class="lbox">
+  <h1>NEXUS</h1>
+  <p>Crie sua conta local para conversar direto com amigos, sem cadastro.</p>
+  <input type="text" id="lname" maxlength="24" placeholder="Seu nome" autocomplete="off">
+  <button id="lgo">Criar conta</button>
+  <label class="btn">Importar conta (.json)<input type="file" id="limp" accept=".json" hidden></label>
+ </div>
+</div>
+
+<div id="lockScreen">
+ <div class="lbox">
+  <h1>🔒 Bloqueado</h1>
+  <p id="lockMsg">Digite seu PIN.</p>
+  <input type="password" id="pinIn" maxlength="12" placeholder="PIN" inputmode="numeric" style="text-align:center;letter-spacing:6px;font-size:1.2rem">
+  <button id="pinGo">Desbloquear</button>
+ </div>
+</div>
+
 <div class="scrim" id="scrim"></div>
-<div id="call" data-s=""><video id="rv" autoplay playsinline></video><video id="lv" autoplay playsinline muted></video>
- <div id="cInfo"><div class="av big" id="cAv"></div><b id="cName"></b><span id="cSt"></span></div>
- <div class="cbar" id="cIn"><button class="ok" id="cAcc" aria-label="Atender">📞</button><button class="no" id="cRej" aria-label="Recusar">✕</button></div>
- <div class="cbar" id="cCtl"><button id="cMute" aria-label="Mudo">🎙️</button><button id="cCam" aria-label="Câmera">📷</button><button id="cFlip" aria-label="Virar câmera">🔄</button><button id="cShare" aria-label="Compartilhar tela">🖥️</button><button class="no" id="cEnd" aria-label="Encerrar">✕</button></div></div>
+
+<div id="call" data-s="">
+ <div id="callTop">
+  <div><b id="cName">Chamada</b> <span id="cSt" class="mono" style="margin-left:8px;opacity:.85"></span></div>
+  <span id="cCount" class="mono" style="font-size:.8rem;color:var(--ac)"></span>
+ </div>
+ <div id="callGrid"></div>
+ <div class="cbar" id="cIn">
+  <button class="ok" id="cAcc" aria-label="Atender">📞</button>
+  <button class="no" id="cRej" aria-label="Recusar">✕</button>
+ </div>
+ <div class="cbar" id="cCtl">
+  <button id="cMute" aria-label="Mudo">🎙️</button>
+  <button id="cCam" aria-label="Câmera">📷</button>
+  <button id="cFlip" aria-label="Virar câmera">🔄</button>
+  <button id="cShare" aria-label="Compartilhar tela">🖥️</button>
+  <button class="no" id="cEnd" aria-label="Encerrar">✕</button>
+ </div>
+</div>
+
+<div class="modal" id="diagModal">
+ <div class="mbox">
+  <h2>🔐 Segurança & Rede <button id="diagClose">✕</button></h2>
+  <div>
+   <label>Código de verificação</label>
+   <div class="sas" id="sasBox">Sem par verificado</div>
+   <small id="sasHex" class="mono" style="display:block;text-align:center;color:var(--mu);margin-top:4px"></small>
+  </div>
+  <div class="stat-grid">
+   <div class="stat-card">Latência<b id="stRtt">—</b></div>
+   <div class="stat-card">Conexão<b id="stIce">—</b></div>
+   <div class="stat-card">Criptografia<b id="stE2e">Ponta a ponta</b></div>
+   <div class="stat-card">Mídias salvas<b id="stDb">—</b></div>
+  </div>
+  <div>
+   <label>Conectados</label>
+   <div id="peerList" class="peer-list" style="margin-top:6px"></div>
+  </div>
+  <details>
+   <summary>🔒 PIN de bloqueio</summary>
+   <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+    <input type="password" id="newPin" placeholder="Novo PIN (4 a 12 dígitos)" maxlength="12" inputmode="numeric">
+    <div class="row">
+     <button id="savePin">Definir PIN</button>
+     <button class="danger" id="clrPin">Remover PIN</button>
+    </div>
+   </div>
+  </details>
+  <details>
+   <summary>🌐 Servidor TURN</summary>
+   <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+    <input type="text" id="turnUrl" placeholder="turn:seu-servidor.com:3478">
+    <input type="text" id="turnUser" placeholder="Usuário TURN">
+    <input type="password" id="turnPass" placeholder="Senha / Credencial">
+    <div class="row">
+     <button id="saveTurn">Salvar TURN</button>
+     <button class="danger" id="clrTurn">Remover</button>
+    </div>
+   </div>
+  </details>
+  <div class="row">
+   <button class="danger sm" style="flex:1" id="purgeMedia">Limpar mídias salvas</button>
+  </div>
+ </div>
+</div>
+
+<div class="modal" id="pollModal">
+ <div class="mbox">
+  <h2>📊 Nova Enquete <button id="pollClose">✕</button></h2>
+  <input type="text" id="pollQ" maxlength="160" placeholder="Pergunta">
+  <textarea id="pollOpts" rows="4" placeholder="Uma opção por linha (2 a 6)"></textarea>
+  <button id="pollSend">Publicar</button>
+ </div>
+</div>
+
+<div class="modal" id="wbModal">
+ <div class="mbox" id="wbBox">
+  <h2>🎨 Quadro Branco <button id="wbClose">✕</button></h2>
+  <canvas id="wbCanvas" width="800" height="500"></canvas>
+  <div class="row" style="flex-wrap:wrap">
+   <button class="swatch act" data-col="#00f0ff" style="background:#00f0ff" title="Ciano"></button>
+   <button class="swatch" data-col="#ff2bd6" style="background:#ff2bd6" title="Magenta"></button>
+   <button class="swatch" data-col="#2ed573" style="background:#2ed573" title="Verde"></button>
+   <button class="swatch" data-col="#f5a623" style="background:#f5a623" title="Amarelo"></button>
+   <button class="swatch" data-col="#ffffff" style="background:#ffffff" title="Branco"></button>
+   <button class="swatch" data-col="#0a0f1d" style="background:#0a0f1d;border-color:var(--mu)" title="Borracha"></button>
+   <input type="range" id="wbSize" min="2" max="24" value="4" style="width:85px" title="Espessura">
+   <button class="ghost sm" id="wbUndo" title="Desfazer último traço">↩</button>
+   <button class="ghost sm" id="wbClear">Limpar</button>
+   <button class="sm" id="wbSend" style="margin-left:auto">Enviar no chat</button>
+  </div>
+ </div>
+</div>
+
+<div class="modal" id="lightbox"><img id="lbImg" alt="Imagem ampliada"></div>
+
 <main>
- <header><button class="ghost" id="menuBtn" aria-label="Menu">☰</button><b id="peerName">NEXUS</b><input type="text" id="q" placeholder="🔍 Buscar" autocomplete="off"><span id="typing"></span><button class="ghost" id="thBtn" aria-label="Tema">🌓</button></header>
+ <header>
+  <button class="ghost" id="menuBtn" aria-label="Menu">☰</button>
+  <div style="min-width:0;display:flex;flex-direction:column">
+   <b id="peerName">NEXUS</b>
+   <span id="peerSub"></span>
+  </div>
+  <span id="pingBadge" class="mono" title="Segurança e rede">● —</span>
+  <span id="typing"></span>
+  <input type="text" id="q" placeholder="🔍 Buscar" autocomplete="off">
+  <span id="qCount" class="mono"></span>
+  <button class="ghost" id="roomShareBtn" style="display:none" title="Copiar link da sala">🔗</button>
+  <button class="ghost" id="thBtn" aria-label="Tema">🌓</button>
+ </header>
+ <div id="pinBar" title="Ir para mensagem fixada"><span></span><b id="pinX" title="Desafixar">✕</b></div>
  <div id="hist" aria-live="polite"></div>
+ <div id="dropZone">📂 Solte arquivos aqui</div>
  <div id="emoji" hidden></div>
+ <div id="rxPop" hidden></div>
  <div id="replyBar"><span id="replyTx"></span><b id="replyX" style="cursor:pointer">✕</b></div>
+ <div id="recBar"><span class="dot"></span><span id="recTime" class="mono">00:00</span><span style="flex:1;opacity:.8">Gravando…</span><button class="danger sm" id="recCancel">Descartar</button><button class="sm" id="recSend">Enviar</button></div>
  <footer>
-  <label class="ic" title="Anexar arquivo">📎<input type="file" id="file" multiple hidden></label>
-  <button class="ic" id="mic" title="Mensagem de voz" aria-label="Gravar voz">🎤</button>
+  <label class="ic" title="Anexar arquivos">📎<input type="file" id="file" multiple hidden></label>
+  <button class="ic" id="mic" title="Gravar mensagem de voz" aria-label="Gravar voz">🎤</button>
+  <button class="ic" id="pollBtn" title="Criar enquete" aria-label="Criar enquete">📊</button>
+  <button class="ic" id="wbBtn" title="Quadro branco" aria-label="Quadro branco">🎨</button>
+  <button class="ic" id="ttlBtn" title="Mensagens temporárias" aria-label="Temporizador">⏱</button>
   <button class="ic" id="emojiBtn" title="Emojis" aria-label="Emojis">😊</button>
   <button class="ic" id="aCall" title="Chamada de voz" aria-label="Chamada de voz">📞</button>
   <button class="ic" id="vCall" title="Chamada de vídeo" aria-label="Chamada de vídeo">🎥</button>
-  <input type="text" id="msg" placeholder="Mensagem secreta..." maxlength="4000" autocomplete="off" disabled>
+  <textarea id="msg" rows="1" placeholder="Mensagem..." maxlength="4000" autocomplete="off" disabled></textarea>
   <button class="ic" id="send" aria-label="Enviar" disabled>➤</button>
  </footer>
 </main>
+
 <script>
 'use strict';
-const $=i=>document.getElementById(i),el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
-const ls={get(k){try{return localStorage.getItem(k)}catch{return null}},set(k,v){try{localStorage.setItem(k,v)}catch{}}};
-const CFG={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]},CH=16384;
-let pc,dc,rx=null,rec=null,sending=Promise.resolve(),tyT,lastTy=0,peer='Parceiro',polite=false,making=false,stream=null,reply=null,pid=null,lastDay='',dialing=null,inV=false,callSt=0,tm=null,ring=null,ringCtx=null,facing='user';
-const ids={},hist=$('hist'),inp=$('msg'),nameIn=$('name'),side=$('side');
-const uid=()=>Math.random().toString(36).slice(2,10),sleep=ms=>new Promise(r=>setTimeout(r,ms));
-let myId=ls.get('nx_id')||'';
-const me=()=>(nameIn.value.trim()||'Anônimo').slice(0,24);
-const fmt=t=>new Date(t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-const isOpen=()=>dc&&dc.readyState==='open';
-const human=n=>n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':(n/1048576).toFixed(1)+' MB';
-const scroll=()=>{hist.scrollTop=hist.scrollHeight};
-const sys=t=>{hist.append(el('div','sys',t));scroll()};
-function toast(t){const n=el('div','toast',t);document.body.append(n);setTimeout(()=>n.remove(),3200)}
-function notify(t){if(!document.hidden)return;document.title='● Nexus | nova mensagem';if(window.Notification&&Notification.permission==='granted')try{new Notification('Nexus',{body:String(t||'').slice(0,100)})}catch{}}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden){document.title='Nexus | P2P Terminal';listen()}});
 
-/* ---------- Códigos compactos ---------- */
-const b64=u=>btoa(String.fromCharCode(...u)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+/* ==================== UTILITÁRIOS ==================== */
+const $=i=>document.getElementById(i);
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+const CH=16384,TTL_MODES=[0,10,30,300],RX_LIST=['❤️','😂','👍','🔥','😮','😢'];
+const SAS_EM='🦊🦁🐼🐸🐙🦄🐝🦋🐬🦖🚀🛸⚡🔥🌈💎🔑🛡️🧭🛰️🎯🎲🎸🎺⚓🌋🌙☀️🍀🍎🍒🍄'.match(/\p{Emoji_Presentation}|\p{Extended_Pictographic}/gu);
+const RELAY='https://ntfy.sh/',AL='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+const uid=()=>Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>b.toString(16).padStart(2,'0')).join('');
+const genId=()=>Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>AL[b%32]).join('');
+const fmtId=i=>i.length===8?i.slice(0,4)+'-'+i.slice(4):i;
+const cleanId=s=>String(s||'').toUpperCase().replace(/[^A-Z2-9]/g,'');
+const cleanRoom=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,24);
+const peerKey=(id,roomId)=>roomId?roomId+'|'+id:id;
+const fmt=t=>new Date(t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+const human=n=>n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':(n/1048576).toFixed(1)+' MB';
+const ini=n=>(n||'?').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const sha=async s=>new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)));
+const b64=u=>{let s='';for(let i=0;i<u.length;i+=8192)s+=String.fromCharCode(...u.subarray(i,i+8192));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
 const unb64=s=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
-const run=async(u,S)=>new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(new S('deflate-raw'))).arrayBuffer());
-async function pack(d){const u=new TextEncoder().encode(JSON.stringify({type:d.type,sdp:d.sdp}));return window.CompressionStream?'N1.'+b64(await run(u,CompressionStream)):'N0.'+b64(u)}
+const runStream=async(u,S)=>new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(new S('deflate-raw'))).arrayBuffer());
+
+/* ==================== INDEXEDDB ENGINE (COM FALLBACK EM MEMÓRIA) ==================== */
+const DB=(()=>{
+ let db=null;
+ const mem={kv:new Map(),chats:new Map(),messages:new Map(),media:new Map()};
+ function open(){
+  return new Promise(res=>{
+   if(!window.indexedDB)return res(null);
+   try{
+    const req=indexedDB.open('nexus_p2p_v3',1);
+    req.onupgradeneeded=e=>{
+     const d=e.target.result;
+     if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv',{keyPath:'k'});
+     if(!d.objectStoreNames.contains('chats'))d.createObjectStore('chats',{keyPath:'id'});
+     if(!d.objectStoreNames.contains('messages')){
+      const ms=d.createObjectStore('messages',{keyPath:'id'});
+      ms.createIndex('by_chat','chatId',{unique:false});
+     }
+     if(!d.objectStoreNames.contains('media')){
+      const md=d.createObjectStore('media',{keyPath:'id'});
+      md.createIndex('by_chat','chatId',{unique:false});
+     }
+    };
+    req.onsuccess=()=>{db=req.result;res(db)};
+    req.onerror=()=>res(null);
+   }catch{res(null)}
+  });
+ }
+ const tx=(st,m='readonly')=>db.transaction(st,m).objectStore(st);
+ const reqP=r=>new Promise((ok,no)=>{r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)});
+ return {
+  open,
+  async getKV(k,def=null){if(!db)return mem.kv.has(k)?mem.kv.get(k):def;const r=await reqP(tx('kv').get(k));return r?r.v:def},
+  async setKV(k,v){mem.kv.set(k,v);if(db)await reqP(tx('kv','readwrite').put({k,v}))},
+  async delKV(k){mem.kv.delete(k);if(db)await reqP(tx('kv','readwrite').delete(k))},
+  async allKV(){if(!db)return Object.fromEntries(mem.kv);const a=await reqP(tx('kv').getAll());return Object.fromEntries(a.map(x=>[x.k,x.v]))},
+  async getChat(id){if(!db)return mem.chats.get(id)||null;return(await reqP(tx('chats').get(id)))||null},
+  async putChat(c){mem.chats.set(c.id,c);if(db)await reqP(tx('chats','readwrite').put(c))},
+  async delChat(id){mem.chats.delete(id);if(db)await reqP(tx('chats','readwrite').delete(id))},
+  async allChats(){if(!db)return[...mem.chats.values()];return await reqP(tx('chats').getAll())},
+  async putMsg(m){mem.messages.set(m.id,m);if(db)await reqP(tx('messages','readwrite').put(m))},
+  async getMsg(id){if(!db)return mem.messages.get(id)||null;return(await reqP(tx('messages').get(id)))||null},
+  async delMsg(id){mem.messages.delete(id);if(db)await reqP(tx('messages','readwrite').delete(id))},
+  async getMsgs(chatId){
+   const now=Date.now();
+   let list=db?await reqP(tx('messages').index('by_chat').getAll(chatId)):[...mem.messages.values()].filter(m=>m.chatId===chatId);
+   list.sort((a,b)=>a.ts-b.ts);
+   const alive=[];
+   for(const m of list){if(m.exp&&m.exp<=now){this.delMsg(m.id);if(m.mediaId)this.delMedia(m.mediaId)}else alive.push(m)}
+   return alive;
+  },
+  async clearChatMsgs(chatId){
+   const msgs=await this.getMsgs(chatId);
+   for(const m of msgs){await this.delMsg(m.id);if(m.mediaId)await this.delMedia(m.mediaId)}
+  },
+  async putMedia(rec){mem.media.set(rec.id,rec);if(db)await reqP(tx('media','readwrite').put(rec))},
+  async getMedia(id){if(!db)return mem.media.get(id)||null;return(await reqP(tx('media').get(id)))||null},
+  async delMedia(id){mem.media.delete(id);if(db)await reqP(tx('media','readwrite').delete(id))},
+  async purgeAllMedia(){mem.media.clear();if(db)await reqP(tx('media','readwrite').clear())},
+  async mediaStats(){
+   const all=db?await reqP(tx('media').getAll()):[...mem.media.values()];
+   return{count:all.length,bytes:all.reduce((s,x)=>s+(x.size||0),0)}
+  }
+ };
+})();
+
+/* ==================== ESTADO GLOBAL ==================== */
+const hist=$('hist'),inp=$('msg'),nameIn=$('name'),side=$('side');
+let myId='',myName='',myPriv=null,myPubJwk=null,soundOn=true,theme='dark',turnCfg=null,pinHash=null;
+let activeChatId=null,activeRoomId=null,lastDay='',reply=null,pinnedId=null,ttlIdx=0,rxTargetId=null;
+let esPersonal=null,esRoom=null,manualPeer=null;
+let localStream=null,shareStream=null,callState='',callRoomId=null,callVideo=false,callTimer=null,ringInt=null,ringCtx=null,facing='user';
+let rec=null,recStream=null,recStart=0,recTm=null,recAborted=false;
+let lastTy=0,tyTimers=new Map(),lastSentId=null;
+
+const chatsCache=new Map(); // chatId -> chatMeta
+const peers=new Map();      // peerKey -> PeerSession (isolado entre DM e cada Sala!)
+const ids={};               // msgId -> DOM node
+const expMap=new Map();     // msgId -> {el, tag, exp}
+const blobUrls=[];
+
+const me=()=>(nameIn.value.trim()||myName||'Anônimo').slice(0,24);
+const scroll=()=>{hist.scrollTop=hist.scrollHeight};
+const sys=t=>{const d=el('div','sys',t);hist.append(d);scroll();return d};
+function toast(t){const n=el('div','toast',t);document.body.append(n);setTimeout(()=>n.remove(),3300)}
+function revokeBlobs(){while(blobUrls.length)try{URL.revokeObjectURL(blobUrls.pop())}catch{}}
+function beep(){if(!soundOn)return;try{const c=ringCtx||(ringCtx=new(window.AudioContext||window.webkitAudioContext)());if(c.state==='suspended')c.resume();
+ const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(660,c.currentTime);o.frequency.exponentialRampToValueAtTime(990,c.currentTime+.08);
+ g.gain.setValueAtTime(.05,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.14);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.15)}catch{}}
+function notify(t){if(!document.hidden){beep();return}document.title='● Nexus | nova mensagem';beep();
+ if(window.Notification&&Notification.permission==='granted')try{new Notification('Nexus',{body:String(t||'').slice(0,100)})}catch{}}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){document.title='Nexus | P2P';listenPersonal();markVisibleRead()}});
+
+/* ==================== COMPACTAÇÃO SDP ==================== */
+async function pack(d){const u=new TextEncoder().encode(JSON.stringify({type:d.type,sdp:d.sdp}));return window.CompressionStream?'N1.'+b64(await runStream(u,CompressionStream)):'N0.'+b64(u)}
 async function unpack(s){s=s.replace(/\s+/g,'');let j;
- if(s.startsWith('N1.'))j=new TextDecoder().decode(await run(unb64(s.slice(3)),DecompressionStream));
+ if(s.startsWith('N1.'))j=new TextDecoder().decode(await runStream(unb64(s.slice(3)),DecompressionStream));
  else if(s.startsWith('N0.'))j=new TextDecoder().decode(unb64(s.slice(3)));
- else j=atob(s); /* aceita códigos do formato antigo */
+ else j=atob(s);
  const d=JSON.parse(j);if(!d.sdp||!/^(offer|answer)$/.test(d.type))throw 0;return d}
 const gathered=p=>new Promise(r=>{if(p.iceGatheringState==='complete')return r();
  const f=()=>{if(p.iceGatheringState==='complete'){p.removeEventListener('icegatheringstatechange',f);r()}};
- p.addEventListener('icegatheringstatechange',f);setTimeout(r,6000)});
+ p.addEventListener('icegatheringstatechange',f);setTimeout(r,5500)});
 
-/* ---------- Conexão ---------- */
-function refreshIn(on){const ok=on||!!(myId&&pid&&getC()[pid]);inp.disabled=$('send').disabled=!ok;inp.placeholder=on||!ok?'Mensagem secreta...':'Offline — entrega quando o contato abrir o Nexus'}
-function setStatus(on,txt,wait){const s=$('status');s.textContent=txt||(on?'Conectado':'Desconectado');s.className='badge'+(on?' on':wait?' wait':'');refreshIn(on);if(on&&innerWidth>768)inp.focus()}
-function drop(){try{endCall()}catch{}try{renderContacts()}catch{}clearReply();try{dc&&dc.close()}catch{}try{pc&&pc.close()}catch{}dc=pc=rx=null;setStatus(false)}
-function setup(){drop();dialing=null;const p=pc=new RTCPeerConnection(CFG);
- p.ondatachannel=e=>bind(e.channel);
- p.ontrack=e=>{const st=e.streams[0],v=st.getVideoTracks().length>0;$('rv').srcObject=st;$('rv').style.visibility=v?'visible':'hidden';$('call').classList.toggle('vid',v)};
- p.onnegotiationneeded=async()=>{if(!isOpen()||p!==pc)return;try{making=true;await p.setLocalDescription();tx({t:'sdp',d:p.localDescription})}catch(e){console.error(e)}finally{making=false}};
- p.onconnectionstatechange=()=>{if(p!==pc)return;const s=p.connectionState;
-  if(s==='connecting')setStatus(false,'Conectando…',true);
-  else if(s==='failed'){sys('A conexão falhou. Gere um novo convite.');drop()}
-  else if(s==='disconnected'||s==='closed'){if(dc){sys('Conexão encerrada.');drop()}}};
- return p}
-function bind(ch){dc=ch;ch.binaryType='arraybuffer';
- ch.onopen=()=>{if(ch!==dc)return;pid=null;setStatus(true);tx({t:'hi',id:myId,name:me()});sys('🔗 Conexão P2P estabelecida!');closeMenu()};
- ch.onclose=()=>{if(ch===dc&&pc){sys('Canal fechado.');drop()}};
- ch.onmessage=onMsg}
-async function host(){try{const p=setup();polite=false;bind(p.createDataChannel('chat'));
- await p.setLocalDescription(await p.createOffer());$('offerOut').value='Reunindo rotas…';
- await gathered(p);$('offerOut').value=await pack(p.localDescription);toast('Convite pronto — copie e envie ao amigo')}
- catch(e){toast('Erro ao gerar convite');console.error(e)}}
-async function process(){const raw=$('codeIn').value.trim();if(!raw)return toast('Cole um código primeiro.');
- try{const d=await unpack(raw);
-  if(d.type==='offer'){const p=setup();polite=true;await p.setRemoteDescription(d);await p.setLocalDescription(await p.createAnswer());
-   $('ansOut').value='Reunindo rotas…';await gathered(p);$('ansOut').value=await pack(p.localDescription);toast('Resposta pronta — envie de volta ao host')}
-  else{if(!pc||pc.signalingState!=='have-local-offer')return toast('Gere um convite antes de colar uma resposta.');
-   await pc.setRemoteDescription(d);setStatus(false,'Conectando…',true)}}
- catch(e){toast('Código inválido ou corrompido.');console.error(e)}}
-const tx=o=>{if(isOpen()){dc.send(JSON.stringify(o));return true}return false};
+/* ==================== CRIPTOGRAFIA ECDH P-256 & RELAY ==================== */
+async function initKeys(){if(!crypto.subtle)return;
+ try{const sp=await DB.getKV('ecdh_priv'),su=await DB.getKV('ecdh_pub');
+  if(sp&&su){myPubJwk=su;myPriv=await crypto.subtle.importKey('jwk',sp,{name:'ECDH',namedCurve:'P-256'},true,['deriveKey']);return}
+  const kp=await crypto.subtle.generateKey({name:'ECDH',namedCurve:'P-256'},true,['deriveKey']);
+  myPriv=kp.privateKey;myPubJwk=await crypto.subtle.exportKey('jwk',kp.publicKey);
+  await DB.setKV('ecdh_priv',await crypto.subtle.exportKey('jwk',kp.privateKey));
+  await DB.setKV('ecdh_pub',myPubJwk)}
+ catch(e){console.error('ECDH init',e)}}
 
-/* ---------- Conexão por ID curto (relay público só para o aperto de mão, cifrado) ---------- */
-const RELAY='https://ntfy.sh/',AL='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let es=null;
-const genId=()=>Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>AL[b%32]).join('');
-const fmtId=i=>i.slice(0,4)+'-'+i.slice(4),cleanId=s=>s.toUpperCase().replace(/[^A-Z2-9]/g,'');
-const sha=async s=>new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)));
-const topic=async id=>'nx'+b64(await sha('topic:'+id)).slice(0,22).replace(/[-_]/g,'x');
-const ckey=async id=>crypto.subtle.importKey('raw',await sha('key:'+id),'AES-GCM',false,['encrypt','decrypt']);
-async function seal(id,o){const iv=crypto.getRandomValues(new Uint8Array(12)),c=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},await ckey(id),new TextEncoder().encode(JSON.stringify(o))));return b64(iv)+'.'+b64(c)}
-async function unseal(id,s){const[a,b]=s.split('.');return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(a)},await ckey(id),unb64(b))))}
-const post=async(to,o)=>{const r=await fetch(RELAY+await topic(to),{method:'POST',body:await seal(to,o)});if(!r.ok)throw 0};
-async function listen(){if(!myId||!window.EventSource||!crypto.subtle)return;if(es)es.close();
- es=new EventSource(RELAY+await topic(myId)+'/sse?since='+(ls.get('nx_last')||'12h'));
- es.onmessage=async e=>{try{const m=JSON.parse(e.data);if(m.event!=='message')return;const o=await unseal(myId,m.message);
-  if(m.time&&m.time>+(ls.get('nx_last')||0))ls.set('nx_last',String(m.time));
-  if(o&&o.t==='m')inbox(o);else if(o&&o.t==='rcv')rcv(o);else if(Date.now()/1000-(m.time||0)<90)onSig(o)}catch{}}}
-async function onSig(o){if(!o||!o.from)return;const id=cleanId(o.from);
- if(o.t==='offer'){if(isOpen())return post(id,{t:'busy',from:myId});
-  if(pc&&pc.signalingState==='have-local-offer'&&dialing===id&&myId<id)return;
-  if(!getC()[id]&&!confirm(String(o.name||'Alguém').slice(0,24)+' ('+fmtId(id)+') quer conectar. Aceitar?'))return;
-  const d=await unpack(o.d),p=setup();polite=true;await p.setRemoteDescription(d);await p.setLocalDescription(await p.createAnswer());await gathered(p);
-  await post(id,{t:'answer',from:myId,name:me(),d:await pack(p.localDescription)})}
- else if(o.t==='answer'){if(pc&&pc.signalingState==='have-local-offer'&&dialing===id)await pc.setRemoteDescription(await unpack(o.d))}
- else if(o.t==='busy')toast('Contato ocupado em outra conexão.')}
-async function dial(id){id=cleanId(id);if(id.length!==8)return toast('ID inválido (8 caracteres).');if(id===myId)return toast('Esse é o seu próprio ID.');
- try{const p=setup();dialing=id;bind(p.createDataChannel('chat'));await p.setLocalDescription(await p.createOffer());setStatus(false,'Chamando…',true);
-  await gathered(p);await post(id,{t:'offer',from:myId,name:me(),d:await pack(p.localDescription)});toast('Aguardando '+fmtId(id)+'… (ele precisa estar com o Nexus aberto)');
-  setTimeout(()=>{if(pc===p&&!isOpen()){toast('Sem resposta.');drop()}},45000)}
- catch(e){toast('Falha ao conectar (sem internet?)');console.error(e);drop()}}
+async function deriveShared(peerJwk){
+ const pub=await crypto.subtle.importKey('jwk',peerJwk,{name:'ECDH',namedCurve:'P-256'},false,[]);
+ return crypto.subtle.deriveKey({name:'ECDH',public:pub},myPriv,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
 
-/* ---------- Mensagens offline (caixa de entrada cifrada no relay) ---------- */
-const atopic=async id=>'nxa'+b64(await sha('alert:'+id)).slice(0,22).replace(/[-_]/g,'x');
-const ping=async to=>{try{await fetch(RELAY+await atopic(to),{method:'POST',headers:{Title:'Nexus'},body:'💬 Nova mensagem no Nexus'})}catch{}};
-async function offline(text){if(!(myId&&pid&&getC()[pid]))return;if(text.length>1500)return toast('Offline: máximo de 1500 caracteres.');
- const to=pid,m={id:uid(),name:me(),text,ts:Date.now()};if(reply){m.re=reply;clearReply()}
- addText(m,true);inp.value='';const b=ids[m.id];if(b)b.st.textContent='⏳';
- try{await post(to,{t:'m',from:myId,name:m.name,id:m.id,text,ts:m.ts,re:m.re});if(b)b.st.textContent='↗';ping(to)}
- catch{if(b)b.st.textContent='⚠';toast('Não foi possível enviar (sem internet?)')}}
-function inbox(o){const id=cleanId(o.from||''),c=getC();if(id.length!==8||!c[id]||!o.id)return;
- const mid=String(o.id).slice(0,16);if(getH(id).some(x=>x.id===mid))return;
- const m={id:mid,name:String(o.name||c[id].name).slice(0,24),text:String(o.text||'').slice(0,4000),ts:Math.min(+o.ts||Date.now(),Date.now())};
+async function computeSas(pubA,pubB){if(!pubA||!pubB||!crypto.subtle)return null;
+ const a=pubA.x+':'+pubA.y,b=pubB.x+':'+pubB.y,h=await sha([a,b].sort().join('|'));
+ return{em:[h[0],h[1],h[2],h[3]].map(v=>SAS_EM[v%SAS_EM.length]).join(' '),hex:Array.from(h.slice(0,4),v=>v.toString(16).padStart(2,'0')).join('').toUpperCase()}}
+
+const dmTopic=async id=>'nx'+b64(await sha('topic:'+id)).slice(0,22).replace(/[-_]/g,'x');
+const alertTopic=async id=>'nxa'+b64(await sha('alert:'+id)).slice(0,22).replace(/[-_]/g,'x');
+const roomTopic=async rid=>'nxr'+b64(await sha('room:'+rid)).slice(0,22).replace(/[-_]/g,'x');
+const dmKey=async id=>crypto.subtle.importKey('raw',await sha('key:'+id),'AES-GCM',false,['encrypt','decrypt']);
+const roomKey=async(rid,pass='')=>crypto.subtle.importKey('raw',await sha('rkey:'+rid+':'+pass),'AES-GCM',false,['encrypt','decrypt']);
+
+async function sealDM(toId,o){
+ const iv=crypto.getRandomValues(new Uint8Array(12)),pt=new TextEncoder().encode(JSON.stringify(o));
+ const peerPub=chatsCache.get(toId)?.pub;
+ if(myPriv&&peerPub&&o.t==='m'){
+  const k=await deriveShared(peerPub),c=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},k,pt));
+  return 'E2.'+myId+'.'+b64(iv)+'.'+b64(c)}
+ const c=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},await dmKey(toId),pt));
+ return b64(iv)+'.'+b64(c)}
+
+async function unsealDM(myOwnId,s){
+ if(s.startsWith('E2.')){
+  const[,fromId,a,b]=s.split('.'),peerPub=chatsCache.get(fromId)?.pub;if(!myPriv||!peerPub)throw 0;
+  const k=await deriveShared(peerPub),obj=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(a)},k,unb64(b))));
+  obj.from=fromId;obj._e2e=true;return obj}
+ const[a,b]=s.split('.');return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(a)},await dmKey(myOwnId),unb64(b))))}
+
+async function sealRoom(rid,pass,o){
+ const iv=crypto.getRandomValues(new Uint8Array(12)),c=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},await roomKey(rid,pass),new TextEncoder().encode(JSON.stringify(o))));
+ return 'R1.'+b64(iv)+'.'+b64(c)}
+async function unsealRoom(rid,pass,s){
+ if(!s.startsWith('R1.'))throw 0;const[,a,b]=s.split('.');
+ return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(a)},await roomKey(rid,pass),unb64(b))))}
+
+const postDM=async(to,o)=>{const r=await fetch(RELAY+await dmTopic(to),{method:'POST',body:await sealDM(to,o)});if(!r.ok)throw 0};
+const postRoom=async(rid,pass,o)=>{const r=await fetch(RELAY+await roomTopic(rid),{method:'POST',body:await sealRoom(rid,pass,o)});if(!r.ok)throw 0};
+const pingAlert=async to=>{try{await fetch(RELAY+await alertTopic(to),{method:'POST',headers:{Title:'Nexus'},body:'💬 Nova mensagem no Nexus'})}catch{}};
+
+/* ==================== GERENCIADOR DE PARES WEBRTC (FULL MESH + DM) ==================== */
+function getIceCfg(){const s=[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}];if(turnCfg&&turnCfg.urls)s.push(turnCfg);return{iceServers:s}}
+const isPeerOpen=p=>!!(p&&p.dc&&p.dc.readyState==='open');
+const sendToPeer=(p,o)=>{if(isPeerOpen(p)){p.dc.send(JSON.stringify(o));return true}return false};
+
+function activePeers(){
+ if(!activeChatId)return[];
+ const ch=chatsCache.get(activeChatId);
+ if(ch&&ch.type==='room')return[...peers.values()].filter(p=>p.roomId===activeChatId&&isPeerOpen(p));
+ const p=peers.get(peerKey(activeChatId,null));return isPeerOpen(p)?[p]:[];
+}
+function broadcastActive(o){const list=activePeers();list.forEach(p=>sendToPeer(p,o));return list.length>0}
+
+function closePeer(key,silent=false){
+ const p=peers.get(key);if(!p)return;
+ clearInterval(p.pingTm);
+ clearTyping(key);
+ try{p.dc&&p.dc.close()}catch{}
+ try{p.pc&&p.pc.close()}catch{}
+ peers.delete(key);
+ removeCallTile(key);
+ if(!silent&&activeChatId&&(p.id===activeChatId||p.roomId===activeChatId)){
+  sys((p.name||'Parceiro')+' desconectou.');
+ }
+ if(callState&&activeCallPeerCount()===0)endCall(false);
+ updateHeaderStatus();renderContacts();
+}
+
+function closeAllPeers(roomOnly=null){
+ for(const[k,p]of[...peers]){
+  if(roomOnly===null||p.roomId===roomOnly){sendToPeer(p,{t:'bye'});closePeer(k,true)}
+ }
+ if((roomOnly===null||roomOnly===activeRoomId)&&esRoom){esRoom.close();esRoom=null;activeRoomId=null}
+ updateHeaderStatus();renderContacts();
+}
+
+function createPeer(peerId,opts={}){
+ const key=peerKey(peerId,opts.roomId||null);
+ if(peers.has(key))closePeer(key,true);
+ const pc=new RTCPeerConnection(getIceCfg());
+ const p={
+  key,id:peerId,name:opts.name||'Parceiro',pub:opts.pub||null,pc,dc:null,
+  polite:!!opts.polite,making:false,ignoreOffer:false,isSettingRemoteAnswerPending:false,
+  roomId:opts.roomId||null,rtt:null,pingTm:null,rx:null,txCancels:new Set(),
+  sending:Promise.resolve(),remoteStream:null,createdAt:Date.now()
+ };
+ peers.set(key,p);
+
+ pc.ondatachannel=e=>bindDC(p,e.channel);
+ pc.onicecandidate=e=>{if(e.candidate&&isPeerOpen(p))sendToPeer(p,{t:'ice',c:e.candidate})};
+ pc.onnegotiationneeded=async()=>{
+  if(!isPeerOpen(p))return;
+  try{p.making=true;await pc.setLocalDescription();sendToPeer(p,{t:'sdp',d:pc.localDescription})}
+  catch(e){console.error('negotiation',e)}finally{p.making=false}
+ };
+ pc.ontrack=e=>{
+  const st=e.streams[0]||new MediaStream([e.track]);
+  p.remoteStream=st;
+  attachRemoteTile(p,st);
+  e.track.onended=()=>{if(p.remoteStream)attachRemoteTile(p,p.remoteStream)};
+  e.track.onmute=()=>{if(p.remoteStream)attachRemoteTile(p,p.remoteStream)};
+  e.track.onunmute=()=>{if(p.remoteStream)attachRemoteTile(p,p.remoteStream)};
+ };
+ pc.onconnectionstatechange=()=>{
+  if(peers.get(p.key)!==p)return;
+  const s=pc.connectionState;
+  if(s==='connecting')updateHeaderStatus('Conectando…',true);
+  else if(s==='failed'){sys('Conexão com '+p.name+' falhou.');closePeer(p.key,true)}
+  else if(s==='disconnected'||s==='closed'){if(p.dc)closePeer(p.key)}
+ };
+ return p;
+}
+
+function bindDC(p,ch){
+ p.dc=ch;ch.binaryType='arraybuffer';ch.bufferedAmountLowThreshold=262144;
+ ch.onopen=()=>{
+  if(p.dc!==ch)return;
+  sendToPeer(p,{t:'hi',id:myId,name:me(),pub:myPubJwk,room:p.roomId});
+  p.pingTm=setInterval(()=>{if(isPeerOpen(p))sendToPeer(p,{t:'ping',ts:performance.now()})},5000);
+  sendToPeer(p,{t:'ping',ts:performance.now()});
+  if(callState&&localStream&&((p.roomId&&p.roomId===callRoomId)||(!p.roomId&&p.id===activeChatId))){
+   localStream.getTracks().forEach(t=>p.pc.addTrack(t,localStream));
+  }
+  updateHeaderStatus();renderContacts();closeMenu();
+ };
+ ch.onclose=()=>{if(p.dc===ch)closePeer(p.key)};
+ ch.onmessage=e=>onPeerMsg(p,e);
+}
+
+/* ==================== SINALIZAÇÃO DM & SALAS DE GRUPO ==================== */
+async function listenPersonal(){
+ if(!myId||!window.EventSource||!crypto.subtle)return;
+ if(esPersonal)esPersonal.close();
+ const since=(await DB.getKV('last_sse'))||'12h';
+ esPersonal=new EventSource(RELAY+await dmTopic(myId)+'/sse?since='+since);
+ esPersonal.onmessage=async e=>{
+  try{
+   const m=JSON.parse(e.data);if(m.event!=='message')return;
+   const o=await unsealDM(myId,m.message);
+   const prev=+(await DB.getKV('last_sse',0));
+   if(m.time&&m.time>prev)await DB.setKV('last_sse',String(m.time));
+   if(o&&o.t==='m')await handleOfflineInbox(o);
+   else if(o&&o.t==='rcv')await handleOfflineRcv(o);
+   else if(Date.now()/1000-(m.time||0)<90)await onDMSig(o);
+  }catch{}
+ };
+}
+
+async function onDMSig(o){
+ if(!o||!o.from)return;const id=cleanId(o.from);if(id.length!==8||id===myId)return;
+ const k=peerKey(id,null);
+ if(o.t==='offer'){
+  const ex=peers.get(k);
+  if(ex&&ex.pc.signalingState==='have-local-offer'&&myId<id)return;
+  if(!chatsCache.has(id)&&!confirm(String(o.name||'Alguém').slice(0,24)+' ('+fmtId(id)+') quer conectar. Aceitar?'))return;
+  const d=await unpack(o.d),p=createPeer(id,{name:o.name,polite:true});
+  await p.pc.setRemoteDescription(d);await p.pc.setLocalDescription(await p.pc.createAnswer());await gathered(p.pc);
+  await postDM(id,{t:'answer',from:myId,name:me(),d:await pack(p.pc.localDescription)});
+ }else if(o.t==='answer'){
+  const p=peers.get(k);if(p&&p.pc.signalingState==='have-local-offer')await p.pc.setRemoteDescription(await unpack(o.d));
+ }else if(o.t==='busy')toast('Contato ocupado.');
+}
+
+async function dialDM(id){
+ id=cleanId(id);if(id.length!==8)return toast('ID inválido (8 caracteres).');
+ if(id===myId)return toast('Esse é o seu próprio ID.');
+ const k=peerKey(id,null);
+ try{
+  await ensureChat(id,'dm',chatsCache.get(id)?.name||fmtId(id));
+  await showChat(id);
+  const p=createPeer(id,{name:chatsCache.get(id)?.name||fmtId(id),polite:false});
+  bindDC(p,p.pc.createDataChannel('chat'));
+  await p.pc.setLocalDescription(await p.pc.createOffer());
+  updateHeaderStatus('Chamando '+fmtId(id)+'…',true);
+  await gathered(p.pc);
+  await postDM(id,{t:'offer',from:myId,name:me(),d:await pack(p.pc.localDescription)});
+  toast('Chamando '+fmtId(id)+'…');
+  setTimeout(()=>{if(peers.get(k)===p&&!isPeerOpen(p)){toast('Sem resposta de '+fmtId(id));closePeer(k,true)}},45000);
+ }catch(e){toast('Falha ao conectar (sem internet?)');console.error(e);closePeer(k,true)}
+}
+
+/* Salas em Malha (WebRTC Full-Mesh com proteção contra colisão/ofertas duplicadas) */
+async function joinRoom(rawCode,pass=''){
+ const code=cleanRoom(rawCode);if(code.length<3)return toast('Código da sala muito curto (mín. 3 chars).');
+ if(!crypto.subtle)return toast('Requer HTTPS/localhost para salas.');
+ const rid='room:'+code;
+ const chat=await ensureChat(rid,'room','#'+code,{roomCode:code,roomPass:pass});
+ if(pass!==undefined){chat.roomPass=pass;await DB.putChat(chat)}
+ await showChat(rid);
+
+ if(esRoom){esRoom.close();esRoom=null}
+ if(activeRoomId&&activeRoomId!==rid)closeAllPeers(activeRoomId);
+ activeRoomId=rid;
+ updateHeaderStatus('Entrando na sala #'+code+'…',true);
+
+ try{
+  const tp=await roomTopic(code);
+  esRoom=new EventSource(RELAY+tp+'/sse?since=10s');
+  esRoom.onmessage=async e=>{
+   try{
+    const m=JSON.parse(e.data);if(m.event!=='message')return;
+    if(Date.now()/1000-(m.time||0)>60)return;
+    const o=await unsealRoom(code,chat.roomPass||'',m.message);
+    if(!o||o.from===myId)return;
+    await onRoomSig(rid,code,chat.roomPass||'',o);
+   }catch{}
+  };
+  await postRoom(code,chat.roomPass||'',{t:'join',from:myId,name:me(),pub:myPubJwk});
+  sys('🌐 Você entrou em #'+code+(chat.roomPass?' 🔒':''));
+  updateHeaderStatus();
+ }catch(e){toast('Erro ao entrar na sala.');console.error(e)}
+}
+
+async function onRoomSig(rid,code,pass,o){
+ const from=cleanId(o.from);if(from.length!==8||from===myId)return;
+ const k=peerKey(from,rid),ex=peers.get(k);
+ const alreadyPendingOrOpen=ex&&(isPeerOpen(ex)||(ex.pc.signalingState==='have-local-offer'&&Date.now()-ex.createdAt<15000));
+
+ if(o.t==='join'){
+  if(alreadyPendingOrOpen)return;
+  if(myId>from){
+   const p=createPeer(from,{name:o.name,pub:o.pub,roomId:rid,polite:false});
+   bindDC(p,p.pc.createDataChannel('chat'));
+   await p.pc.setLocalDescription(await p.pc.createOffer());await gathered(p.pc);
+   await postRoom(code,pass,{t:'r_offer',from:myId,to:from,name:me(),pub:myPubJwk,d:await pack(p.pc.localDescription)});
+  }else{
+   await postRoom(code,pass,{t:'here',from:myId,to:from,name:me(),pub:myPubJwk});
+  }
+ }else if(o.t==='here'&&o.to===myId){
+  if(alreadyPendingOrOpen)return;
+  if(myId>from){
+   const p=createPeer(from,{name:o.name,pub:o.pub,roomId:rid,polite:false});
+   bindDC(p,p.pc.createDataChannel('chat'));
+   await p.pc.setLocalDescription(await p.pc.createOffer());await gathered(p.pc);
+   await postRoom(code,pass,{t:'r_offer',from:myId,to:from,name:me(),pub:myPubJwk,d:await pack(p.pc.localDescription)});
+  }
+ }else if(o.t==='r_offer'&&o.to===myId){
+  if(ex&&isPeerOpen(ex))return;
+  const p=createPeer(from,{name:o.name,pub:o.pub,roomId:rid,polite:true});
+  await p.pc.setRemoteDescription(await unpack(o.d));await p.pc.setLocalDescription(await p.pc.createAnswer());await gathered(p.pc);
+  await postRoom(code,pass,{t:'r_answer',from:myId,to:from,name:me(),pub:myPubJwk,d:await pack(p.pc.localDescription)});
+ }else if(o.t==='r_answer'&&o.to===myId){
+  if(ex&&ex.pc.signalingState==='have-local-offer')await ex.pc.setRemoteDescription(await unpack(o.d));
+ }
+}
+
+/* Modo Manual (LAN / sem relay) */
+async function manualHost(){
+ try{
+  const mid='manual_'+uid().slice(0,6);
+  const p=manualPeer=createPeer(mid,{name:'Parceiro Manual',polite:false});
+  bindDC(p,p.pc.createDataChannel('chat'));
+  await p.pc.setLocalDescription(await p.pc.createOffer());
+  $('offerOut').value='Reunindo rotas…';await gathered(p.pc);
+  $('offerOut').value=await pack(p.pc.localDescription);
+  toast('Convite pronto.');
+ }catch(e){toast('Erro ao gerar convite');console.error(e)}
+}
+async function manualProcess(){
+ const raw=$('codeIn').value.trim();if(!raw)return toast('Cole um código primeiro.');
+ try{
+  const d=await unpack(raw);
+  if(d.type==='offer'){
+   const mid='manual_'+uid().slice(0,6);
+   const p=manualPeer=createPeer(mid,{name:'Parceiro Manual',polite:true});
+   await p.pc.setRemoteDescription(d);await p.pc.setLocalDescription(await p.pc.createAnswer());
+   $('ansOut').value='Reunindo rotas…';await gathered(p.pc);
+   $('ansOut').value=await pack(p.pc.localDescription);
+   toast('Resposta pronta.');
+  }else{
+   if(!manualPeer||manualPeer.pc.signalingState!=='have-local-offer')return toast('Gere um convite antes de colar uma resposta.');
+   await manualPeer.pc.setRemoteDescription(d);updateHeaderStatus('Conectando…',true);
+  }
+ }catch(e){toast('Código inválido ou corrompido.');console.error(e)}
+}
+
+/* ==================== CHATS, MENSAGENS OFFLINE & RENDER ==================== */
+async function ensureChat(id,type,name,extra={}){
+ let c=chatsCache.get(id)||await DB.getChat(id);
+ if(!c){c={id,type,name,ts:Date.now(),unread:0,...extra};chatsCache.set(id,c);await DB.putChat(c)}
+ else{let chg=false;if(name&&c.name!==name&&type==='dm'){c.name=name;chg=true}
+  for(const k in extra){if(extra[k]!==undefined&&c[k]!==extra[k]){c[k]=extra[k];chg=true}}
+  if(chg){chatsCache.set(id,c);await DB.putChat(c)}}
+ renderContacts();return c;
+}
+
+async function handleOfflineInbox(o){
+ const id=cleanId(o.from||'');if(id.length!==8||!chatsCache.has(id)||!o.id)return;
+ const mid=String(o.id).slice(0,20);if(await DB.getMsg(mid))return;
+ const c=chatsCache.get(id),ttl=+o.ttl||0;
+ const m={id:mid,chatId:id,kind:'text',from:id,name:String(o.name||c.name).slice(0,24),text:String(o.text||'').slice(0,4000),
+  ts:Math.min(+o.ts||Date.now(),Date.now()),self:false,ttl:ttl||undefined,exp:ttl?Date.now()+ttl*1000:undefined};
  if(o.re&&o.re.text)m.re={name:String(o.re.name||'').slice(0,24),text:String(o.re.text).slice(0,80)};
- if(pid===id)addText(m,false);else{const h=getH(id);h.push({...m,self:false});ls.set('nx_h_'+id,JSON.stringify(h.slice(-500)))}
- c[id].ts=Date.now();ls.set('nx_contacts',JSON.stringify(c));renderContacts();
- post(id,{t:'rcv',from:myId,id:mid}).catch(()=>{});
- if(document.hidden)notify(m.name+': '+m.text);else if(pid!==id)toast('💬 '+m.name+': '+m.text.slice(0,40))}
-function rcv(o){const id=cleanId(o.from||'');if(pid!==id)return;const b=ids[o.id];if(b&&b.st&&b.classList.contains('self'))b.st.textContent='✓✓'}
+ await DB.putMsg(m);
+ c.ts=Date.now();c.lastText=m.text.slice(0,45);
+ if(activeChatId===id){await renderMessage(m)}else{c.unread=(c.unread||0)+1}
+ await DB.putChat(c);renderContacts();
+ postDM(id,{t:'rcv',from:myId,id:mid}).catch(()=>{});
+ if(document.hidden)notify(m.name+': '+m.text);else if(activeChatId!==id){beep();toast('💬 '+m.name+': '+m.text.slice(0,40))}
+}
+async function handleOfflineRcv(o){
+ const id=cleanId(o.from||'');const m=await DB.getMsg(o.id);
+ if(m&&m.chatId===id&&m.self){m.ack=true;await DB.putMsg(m);const b=ids[m.id];if(b&&b.st)b.st.textContent='✓✓'}
+}
 
-/* ---------- Mensagens ---------- */
+function updateHeaderStatus(overrideTxt='',wait=false){
+ const s=$('status'),pb=$('pingBadge'),sub=$('peerSub'),rBtn=$('roomShareBtn');
+ const ch=activeChatId?chatsCache.get(activeChatId):null;
+ const aps=activePeers();
+ const online=aps.length>0;
+
+ if(overrideTxt){s.textContent=overrideTxt;s.className='badge'+(wait?' wait':'')}
+ else if(ch&&ch.type==='room'){
+  const inThisRoom=activeRoomId===ch.id;
+  s.textContent=inThisRoom?('Sala: '+aps.length+' par'+(aps.length===1?'':'es')):'Sala desconectada';
+  s.className='badge'+(aps.length?' on':inThisRoom?' wait':'');
+ }else{
+  s.textContent=online?'Conectado':'Desconectado';
+  s.className='badge'+(online?' on':'');
+ }
+
+ if(ch){
+  $('peerName').textContent=ch.name;
+  rBtn.style.display=ch.type==='room'?'inline-block':'none';
+  sub.textContent=ch.type==='room'?(aps.length?aps.map(p=>p.name).join(', '):'Aguardando…'):(ch.pub?'🔒 Criptografado':fmtId(ch.id));
+ }else{
+  $('peerName').textContent='NEXUS';sub.textContent='';rBtn.style.display='none';
+ }
+
+ pb.classList.toggle('on',online);
+ if(online){
+  const rtts=aps.map(p=>p.rtt).filter(Boolean);
+  const avg=rtts.length?Math.round(rtts.reduce((a,b)=>a+b,0)/rtts.length):null;
+  pb.textContent=(ch?.type==='room'?'👥 '+aps.length+' · ':'● ')+(avg?avg+'ms':'P2P');
+  pb.style.color=!avg||avg<120?'var(--ok)':avg<300?'var(--warn)':'var(--bad)';
+ }
+
+ const canType=online||(ch&&ch.type==='dm'&&myId&&ch.id.length===8);
+ inp.disabled=$('send').disabled=!canType;
+ inp.placeholder=online?'Mensagem...':(canType?'Offline — entrega quando abrir':'Conecte-se para conversar...');
+}
+
+function renderContacts(){
+ const box=$('contacts');box.replaceChildren();
+ const list=[...chatsCache.values()].sort((a,b)=>(b.ts||0)-(a.ts||0));
+ if(!list.length){box.append(el('span','sys','Nenhuma conversa ou sala'));return}
+ list.forEach(c=>{
+  const isRoom=c.type==='room';
+  const openCnt=isRoom?[...peers.values()].filter(p=>p.roomId===c.id&&isPeerOpen(p)).length:(isPeerOpen(peers.get(peerKey(c.id,null)))?1:0);
+  const r=el('div','ct'+(c.id===activeChatId?' act':'')),w=el('div','ctw');
+  const av=el('div','av'+(isRoom?' room':''),isRoom?'#':ini(c.name));
+  const title=(isRoom?'':(c.pub?'🔒 ':''))+c.name+(openCnt?(isRoom?' 🟢'+openCnt:' 🟢'):'');
+  w.append(el('b','',title),el('small','',c.lastText||(isRoom?'Sala de grupo':'Sem mensagens')));
+  const cn=el('span','','⚡');cn.title=isRoom?'Entrar na sala':'Conectar P2P';
+  const x=el('span','','✕');x.title='Remover';
+  r.onclick=()=>{showChat(c.id);closeMenu()};
+  cn.onclick=e=>{e.stopPropagation();if(isRoom)joinRoom(c.roomCode||c.name.slice(1),c.roomPass||'');else dialDM(c.id)};
+  x.onclick=async e=>{e.stopPropagation();if(!confirm('Remover conversa e histórico?'))return;
+   if(isRoom)closeAllPeers(c.id);else closePeer(peerKey(c.id,null),true);
+   await DB.clearChatMsgs(c.id);await DB.delChat(c.id);chatsCache.delete(c.id);
+   if(activeChatId===c.id){activeChatId=null;hist.replaceChildren();sys('Conversa removida.')}
+   renderContacts();updateHeaderStatus()};
+  r.append(av,w);
+  if(c.unread)r.append(el('span','unread',String(c.unread)));
+  r.append(cn,x);box.append(r);
+ });
+}
+
+async function showChat(chatId){
+ activeChatId=chatId;revokeBlobs();hist.replaceChildren();lastDay='';expMap.clear();clearPin(false);
+ for(const k in ids)delete ids[k];
+ const c=chatsCache.get(chatId);
+ if(c&&c.unread){c.unread=0;await DB.putChat(c)}
+ const msgs=await DB.getMsgs(chatId);
+ for(const m of msgs)await renderMessage(m,false);
+ if(!msgs.length)sys(c?.type==='room'?'Compartilhe o código ou link 🔗 para convidar.':'Sem mensagens ainda.');
+ scroll();renderContacts();updateHeaderStatus();markVisibleRead();
+}
+
+/* ==================== FORMATAÇÃO MINI-MARKDOWN SEGURA ==================== */
+function renderInline(parent,str){
+ const re=/(https?:\/\/[^\s<]+|`[^`\n]+`|\*\*[^*\n]+\*\*|\*[^*\n]+\*|~~[^~\n]+~~)/g;
+ let last=0,m;
+ while((m=re.exec(str))){
+  if(m.index>last)parent.append(str.slice(last,m.index));
+  const tok=m[0];
+  if(tok.startsWith('http')){const a=el('a','',tok);a.href=tok;a.target='_blank';a.rel='noopener noreferrer';a.style.color='inherit';parent.append(a)}
+  else if(tok.startsWith('`'))parent.append(el('code','',tok.slice(1,-1)));
+  else if(tok.startsWith('**'))parent.append(el('strong','',tok.slice(2,-2)));
+  else if(tok.startsWith('*'))parent.append(el('em','',tok.slice(1,-1)));
+  else if(tok.startsWith('~~'))parent.append(el('del','',tok.slice(2,-2)));
+  last=m.index+tok.length}
+ if(last<str.length)parent.append(str.slice(last))}
+
+function fillRich(n,t){
+ n.replaceChildren();
+ const parts=t.split(/```(?:\w*\n)?([\s\S]*?)```/g);
+ parts.forEach((p,i)=>{
+  if(i%2){
+   const wrap=el('div','codewrap'),pre=el('pre'),codeText=p.replace(/^\n+|\n+$/g,''),cd=el('code','',codeText);
+   const cp=el('button','cpcode','Copiar');cp.onclick=()=>copyTxt(codeText);
+   pre.append(cd);wrap.append(cp,pre);n.append(wrap);
+  }else renderInline(n,p);
+ });
+}
+
+/* ==================== RENDERIZAÇÃO DE MENSAGENS, ENQUETES & MÍDIA ==================== */
 function bubble(self,name,ts){const b=el('div','msg '+(self?'self':'other')),h=el('div','mh');h.append(el('span','',name),el('span','',fmt(ts)));b.append(h);hist.append(b);return b}
-function rxRender(b){const n=(b.me?1:0)+(b.pe?1:0);b.rx.textContent=n?'❤️'+(n>1?' '+n:''):''}
-const getH=id=>{try{return JSON.parse(ls.get('nx_h_'+id)||'[]')}catch{return[]}};
-const getC=()=>{try{return JSON.parse(ls.get('nx_contacts')||'{}')}catch{return{}}};
-function persist(m,self){if(!pid)return;const h=getH(pid);h.push({...m,self});ls.set('nx_h_'+pid,JSON.stringify(h.slice(-500)));renderContacts()}
-function updH(id,fn){if(pid)ls.set('nx_h_'+pid,JSON.stringify(getH(pid).map(m=>m.id===id?fn(m):m).filter(Boolean)))}
-function fill(n,t){n.replaceChildren();t.split(/(https?:\/\/[^\s<]+)/g).forEach((x,i)=>{if(i%2){const a=el('a','',x);a.href=x;a.target='_blank';a.rel='noopener noreferrer';a.style.color='inherit';n.append(a)}else n.append(x)})}
-function showChat(id,name){if(!isOpen())pid=id;hist.replaceChildren();lastDay='';for(const k in ids)delete ids[k];$('peerName').textContent=name;
- const h=getH(id);h.forEach(m=>addText(m,m.self,false));if(!h.length)sys('Sem mensagens ainda.');scroll();refreshIn(isOpen())}
-const ini=n=>(n||'?').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
-function renderContacts(){const c=$('contacts'),all=getC(),k=Object.keys(all).sort((a,b)=>all[b].ts-all[a].ts);c.replaceChildren();
- if(!k.length)c.append(el('span','sys','Nenhum contato ainda'));
- k.forEach(id=>{const r=el('div','ct'),w=el('div','ctw'),l=getH(id).slice(-1)[0],on=isOpen()&&id===pid,cn=el('span','','⚡'),x=el('span','','✕');
-  w.append(el('b','',all[id].name+(on?' 🟢':'')),el('small','',l?(l.self?'Você: ':'')+l.text.slice(0,40):'Sem mensagens'));cn.title='Conectar';
-  r.onclick=()=>{if(isOpen()&&id!==pid)return toast('Desconecte para ver outro histórico.');showChat(id,all[id].name);closeMenu()};
-  cn.onclick=e=>{e.stopPropagation();dial(id)};
-  x.onclick=e=>{e.stopPropagation();if(confirm('Remover contato e histórico?')){delete all[id];ls.set('nx_contacts',JSON.stringify(all));ls.set('nx_h_'+id,'[]');renderContacts()}};
-  r.append(el('div','av',ini(all[id].name)),w,cn,x);c.append(r)})}
-function addText(m,self,save=true){const day=new Date(m.ts).toDateString();if(day!==lastDay){lastDay=day;hist.append(el('div','sys',new Date(m.ts).toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})))}
- const b=bubble(self,m.name,m.ts),meta=el('div','meta');
- if(m.re)b.append(el('div','quote',m.re.name+': '+m.re.text));b.tx=el('div','tx');fill(b.tx,m.text);b.append(b.tx);b.ed=el('span');b.rx=el('span','rx');b.st=el('span','',self?'✓':'');
- const rp=el('span','','↩');rp.style.cursor='pointer';rp.title='Responder';rp.onclick=()=>{reply={name:m.name,text:m.text.slice(0,80)};$('replyTx').textContent='↩ '+reply.name+': '+reply.text;$('replyBar').classList.add('on');inp.focus()};meta.append(b.ed,b.rx,b.st,rp);
- if(self){const ed=el('span','','✎'),dl=el('span','','🗑');ed.style.cursor=dl.style.cursor='pointer';ed.title='Editar';dl.title='Apagar para todos';
-  ed.onclick=()=>{if(!isOpen())return;const t=prompt('Editar mensagem:',m.text);if(t&&t.trim()){m.text=t.trim().slice(0,4000);fill(b.tx,m.text);b.ed.textContent='editada';tx({t:'edit',id:m.id,text:m.text});updH(m.id,o=>({...o,text:m.text}))}};
-  dl.onclick=()=>{if(isOpen()&&confirm('Apagar para todos?')){tx({t:'del',id:m.id});b.remove();delete ids[m.id];updH(m.id,()=>null)}};meta.append(ed,dl)}b.append(meta);
- ids[m.id]=b;b.title='Toque duas vezes para reagir';
- b.ondblclick=()=>{b.me=!b.me;rxRender(b);tx({t:'rx',id:m.id,on:b.me})};scroll();if(save)persist(m,self)}
-function send(){const text=inp.value.trim();if(!text)return;if(!isOpen())return offline(text);const m={id:uid(),name:me(),text,ts:Date.now()};if(reply){m.re=reply;clearReply()}tx({t:'m',...m});addText(m,true);inp.value=''}
-function onMsg(e){
- if(typeof e.data!=='string'){if(rx){rx.parts.push(e.data);rx.got+=e.data.byteLength;rx.f.prog(rx.got/rx.size)}return}
+
+function renderRxs(b,rxs){
+ b.rxsEl.replaceChildren();if(!rxs)return;
+ Object.keys(rxs).forEach(em=>{
+  const who=rxs[em]||[];if(!who.length)return;
+  const mine=who.includes(myId);
+  const p=el('span','rx-pill'+(mine?' mine':''),em+(who.length>1?' '+who.length:''));
+  p.onclick=()=>toggleRx(b.mid,em);
+  b.rxsEl.append(p);
+ });
+}
+
+async function toggleRx(msgId,em){
+ const m=await DB.getMsg(msgId);if(!m)return;
+ m.rxs=m.rxs||{};const arr=new Set(m.rxs[em]||[]);
+ const on=!arr.has(myId);if(on)arr.add(myId);else arr.delete(myId);
+ m.rxs[em]=[...arr];await DB.putMsg(m);
+ if(ids[msgId])renderRxs(ids[msgId],m.rxs);
+ broadcastActive({t:'rx',id:msgId,em,on,by:myId});
+}
+
+function renderPollDOM(container,m){
+ container.replaceChildren();
+ const p=m.poll,wrap=el('div','poll');
+ wrap.append(el('div','poll-q','📊 '+p.q));
+ const total=p.opts.reduce((s,o)=>s+(o.votes?.length||0),0);
+ p.opts.forEach((o,idx)=>{
+  const votes=o.votes||[],voted=votes.includes(myId),pct=total?Math.round(votes.length*100/total):0;
+  const row=el('div','poll-opt'+(voted?' voted':''));
+  const fl=el('div','pfill');fl.style.width=pct+'%';
+  row.append(fl,el('span','',(voted?'✓ ':'')+o.t),el('span','mono',pct+'% ('+votes.length+')'));
+  row.onclick=()=>votePoll(m.id,idx);
+  wrap.append(row);
+ });
+ wrap.append(el('div','poll-ft',total+' voto'+(total===1?'':'s')+' · toque para votar'));
+ container.append(wrap);
+}
+
+async function votePoll(msgId,optIdx){
+ const m=await DB.getMsg(msgId);if(!m||!m.poll)return;
+ m.poll.opts.forEach((o,i)=>{
+  const s=new Set(o.votes||[]);
+  if(i===optIdx){if(s.has(myId))s.delete(myId);else s.add(myId)}else s.delete(myId);
+  o.votes=[...s];
+ });
+ await DB.putMsg(m);
+ if(ids[msgId]&&ids[msgId].pollEl)renderPollDOM(ids[msgId].pollEl,m);
+ broadcastActive({t:'vote',id:msgId,opt:optIdx,by:myId});
+}
+
+async function renderMessage(m,doScroll=true){
+ if(m.exp&&m.exp<=Date.now())return;
+ const day=new Date(m.ts).toDateString();
+ if(day!==lastDay){lastDay=day;hist.append(el('div','sys day-sep',new Date(m.ts).toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})))}
+ const b=bubble(m.self,m.name,m.ts),meta=el('div','meta');
+ b.mid=m.id;
+
+ if(m.re)b.append(el('div','quote',m.re.name+': '+m.re.text));
+
+ if(m.kind==='poll'&&m.poll){
+  b.pollEl=el('div');renderPollDOM(b.pollEl,m);b.append(b.pollEl);
+ }else if(m.kind==='file'){
+  const fm=m.fileMeta||{name:'arquivo',size:0,mime:''};
+  const info=el('div','fi');info.append(el('span','','📄 '+fm.name+' · '+human(fm.size)));
+  b.append(info);
+  const rec=m.mediaId?await DB.getMedia(m.mediaId):null;
+  if(rec&&rec.blob){mountMediaBlob(b,info,rec.blob,fm.name)}
+  else{b.append(el('small','', '(Mídia removida)'))}
+ }else{
+  b.tx=el('div','tx'+(m.action?' action':''));
+  fillRich(b.tx,m.text||'');b.append(b.tx);
+ }
+
+ b.rxsEl=el('div','rxs');b.append(b.rxsEl);renderRxs(b,m.rxs);
+ b.ed=el('span','',m.edited?'editada':'');
+ b.st=el('span','st'+(m.read?' read':''),m.self?(m.read||m.ack?'✓✓':'✓'):'');
+ if(m.exp){const tg=el('span','ttl-tag');meta.append(tg);expMap.set(m.id,{el:b,tag:tg,exp:m.exp})}
+
+ const mkAct=(ic,ti,fn)=>{const s=el('span','act',ic);s.title=ti;s.onclick=fn;return s};
+ meta.append(b.ed,b.st,
+  mkAct('😀','Reagir',e=>{e.stopPropagation();openRxPop(m.id,e.target)}),
+  mkAct('↩','Responder',()=>{reply={name:m.name,text:(m.text||m.poll?.q||m.fileMeta?.name||'').slice(0,80)};$('replyTx').textContent='↩ '+reply.name+': '+reply.text;$('replyBar').classList.add('on');inp.focus()}));
+ if(m.kind==='text'){
+  meta.append(mkAct('📌','Fixar',()=>setPin(m.id,m.name,m.text,true)),mkAct('📋','Copiar',()=>copyTxt(m.text)));
+ }
+ if(m.self){
+  if(m.kind==='text')meta.append(mkAct('✎','Editar',()=>editMessagePrompt(m.id)));
+  meta.append(mkAct('🗑','Apagar para todos',async()=>{if(confirm('Apagar para todos?')){broadcastActive({t:'del',id:m.id});await removeMsg(m.id)}}));
+ }
+ b.append(meta);ids[m.id]=b;
+ b.ondblclick=()=>toggleRx(m.id,'❤️');
+ if(doScroll)scroll();
+}
+
+function mountMediaBlob(b,info,blob,fname){
+ const u=URL.createObjectURL(blob),t=blob.type||'';blobUrls.push(u);
+ if(t.startsWith('audio/')){const a=el('audio');a.controls=true;a.src=u;info.replaceWith(a)}
+ else if(t.startsWith('video/')){const v=el('video','pv');v.controls=true;v.playsInline=true;v.src=u;info.after(v);const dl=el('a','dl','⬇ Salvar');dl.href=u;dl.download=fname;b.append(dl)}
+ else{if(t.startsWith('image/')){const i=el('img','pv');i.src=u;i.alt=fname;i.onclick=()=>{$('lbImg').src=u;$('lightbox').classList.add('on')};info.after(i)}
+  const dl=el('a','dl','⬇ Salvar');dl.href=u;dl.download=fname;b.append(dl)}
+}
+
+async function editMessagePrompt(msgId){
+ const m=await DB.getMsg(msgId);if(!m||!m.self)return;
+ const t=prompt('Editar mensagem:',m.text);if(!t||!t.trim())return;
+ m.text=t.trim().slice(0,4000);m.edited=true;await DB.putMsg(m);
+ if(ids[msgId]&&ids[msgId].tx){fillRich(ids[msgId].tx,m.text);ids[msgId].ed.textContent='editada'}
+ broadcastActive({t:'edit',id:msgId,text:m.text});
+}
+
+async function removeMsg(id){
+ const m=await DB.getMsg(id);
+ if(m&&m.mediaId)await DB.delMedia(m.mediaId);
+ await DB.delMsg(id);
+ if(ids[id]){ids[id].remove();delete ids[id]}
+ expMap.delete(id);
+ if(pinnedId===id)clearPin(false);
+}
+
+setInterval(()=>{const now=Date.now();for(const[id,it]of expMap){const left=Math.ceil((it.exp-now)/1000);
+ if(left<=0)removeMsg(id);else it.tag.textContent='⏱ '+left+'s'}},1000);
+
+function setPin(id,name,text,broadcast){pinnedId=id;$('pinBar').classList.add('on');$('pinBar').firstChild.textContent='📌 '+name+': '+text.slice(0,90);
+ if(broadcast)broadcastActive({t:'pin',id,name,text:text.slice(0,90)})}
+function clearPin(broadcast){pinnedId=null;$('pinBar').classList.remove('on');if(broadcast)broadcastActive({t:'pin',id:null})}
+$('pinBar').onclick=e=>{if(e.target.id==='pinX')return clearPin(true);if(pinnedId&&ids[pinnedId]){ids[pinnedId].scrollIntoView({behavior:'smooth',block:'center'});ids[pinnedId].classList.add('hl');setTimeout(()=>ids[pinnedId]?.classList.remove('hl'),1400)}};
+
+function markVisibleRead(){
+ if(document.hidden||!activeChatId||!activePeers().length)return;
+ const unreadIds=Object.keys(ids).filter(id=>ids[id].classList.contains('other')&&!ids[id]._rd);
+ if(unreadIds.length){unreadIds.forEach(id=>ids[id]._rd=true);broadcastActive({t:'read',ids:unreadIds})}
+}
+
+/* ==================== ENVIO & SLASH COMMANDS ==================== */
+const resetInp=()=>{inp.value='';inp.style.height='auto'};
+
+async function handleSlash(raw){
+ const[cmd,...rest]=raw.slice(1).trim().split(/\s+/),arg=rest.join(' ');
+ switch(cmd.toLowerCase()){
+  case 'help':
+   sys('Comandos: /me <ação> · /roll [lados] · /flip · /poll Pergunta | Op1 | Op2 · /ttl <0|10|30|300> · /nick <nome> · /ping · /shrug · /clear · /export');return true;
+  case 'clear':$('clrBtn').click();return true;
+  case 'export':$('expBtn').click();return true;
+  case 'nick':if(arg){nameIn.value=arg.slice(0,24);myName=nameIn.value;await DB.setKV('name',myName);toast('Nome alterado para '+myName)}return true;
+  case 'ttl':{const v=parseInt(arg,10)||0;const i=TTL_MODES.indexOf(v);ttlIdx=i>=0?i:0;updateTtlBtn();toast(TTL_MODES[ttlIdx]?'Autodestruição: '+TTL_MODES[ttlIdx]+'s':'Efêmeras OFF');return true}
+  case 'ping':{const aps=activePeers();sys(aps.length?aps.map(p=>`${p.name}: ${p.rtt||'—'}ms`).join(' · '):'Sem pares online.');return true}
+  case 'shrug':inp.value=(arg?arg+' ':'')+'¯\\_(ツ)_/¯';return false;
+  case 'me':if(!arg)return true;await sendTextMsg('*'+me()+' '+arg+'*',true);return true;
+  case 'roll':{const sides=Math.max(2,Math.min(10000,parseInt(arg,10)||20)),n=1+Math.floor(Math.random()*sides);await sendTextMsg(`🎲 **${me()}** rolou **d${sides}** → **${n}**`,true);return true}
+  case 'flip':{const r=Math.random()<.5?'Cara 🪙':'Coroa 👑';await sendTextMsg(`🪙 **${me()}** jogou moeda → **${r}**`,true);return true}
+  case 'poll':{const p=arg.split('|').map(x=>x.trim()).filter(Boolean);if(p.length<3){toast('Use: /poll Pergunta | Opção 1 | Opção 2');return true}
+   await createAndSendPoll(p[0],p.slice(1,7));return true}
+  default:toast('Comando desconhecido. Digite /help.');return true;
+ }
+}
+
+async function sendTextMsg(text,isAction=false){
+ if(!activeChatId)return;
+ const ch=chatsCache.get(activeChatId),ttl=TTL_MODES[ttlIdx];
+ const m={id:uid(),chatId:activeChatId,kind:'text',from:myId,name:me(),text,action:isAction||undefined,ts:Date.now(),self:true,
+  ttl:ttl||undefined,exp:ttl?Date.now()+ttl*1000:undefined};
+ if(reply){m.re=reply;clearReply()}
+
+ if(activePeers().length>0){
+  broadcastActive({t:'m',id:m.id,name:m.name,text:m.text,action:m.action,ts:m.ts,re:m.re,ttl:m.ttl});
+  await DB.putMsg(m);await renderMessage(m);lastSentId=m.id;
+  if(ch){ch.ts=Date.now();ch.lastText='Você: '+text.slice(0,42);await DB.putChat(ch);renderContacts()}
+  return;
+ }
+ if(ch&&ch.type==='dm'&&ch.id.length===8){
+  if(text.length>1500)return toast('Offline: máximo de 1500 caracteres.');
+  await DB.putMsg(m);await renderMessage(m);lastSentId=m.id;
+  const b=ids[m.id];if(b)b.st.textContent='⏳';
+  try{
+   await postDM(ch.id,{t:'m',from:myId,name:m.name,id:m.id,text:m.text,ts:m.ts,re:m.re,ttl:m.ttl});
+   if(b)b.st.textContent=ch.pub?'🔒↗':'↗';
+   ch.ts=Date.now();ch.lastText='Você: '+text.slice(0,42);await DB.putChat(ch);renderContacts();
+   pingAlert(ch.id);
+  }catch{if(b)b.st.textContent='⚠';toast('Falha ao enviar offline (sem internet?)')}
+ }
+}
+
+async function send(){
+ const text=inp.value.trim();if(!text)return;
+ if(text.startsWith('/')){const done=await handleSlash(text);if(done){resetInp();return}}
+ const finalTx=inp.value.trim();resetInp();
+ await sendTextMsg(finalTx);
+}
+
+async function createAndSendPoll(q,opts){
+ if(!activePeers().length)return toast('Conecte-se primeiro para criar enquetes.');
+ const m={id:uid(),chatId:activeChatId,kind:'poll',from:myId,name:me(),ts:Date.now(),self:true,
+  poll:{q:q.slice(0,160),opts:opts.map(t=>({t:t.slice(0,80),votes:[]}))}};
+ await DB.putMsg(m);await renderMessage(m);
+ broadcastActive({t:'poll',id:m.id,name:m.name,poll:m.poll});
+ const ch=chatsCache.get(activeChatId);if(ch){ch.ts=Date.now();ch.lastText='📊 '+q.slice(0,38);await DB.putChat(ch);renderContacts()}
+}
+
+/* ==================== RECEPÇÃO DE PACOTES P2P ==================== */
+async function onPeerMsg(p,e){
+ if(typeof e.data!=='string'){
+  if(p.rx&&!p.rx.cancel){p.rx.parts.push(e.data);p.rx.got+=e.data.byteLength;p.rx.f?.prog(p.rx.got/Math.max(p.rx.size,1))}
+  return;
+ }
  let d;try{d=JSON.parse(e.data)}catch{return}
- const nm=String(d.name||d.from||peer).slice(0,24);
+ const chatId=p.roomId||p.id;
+ const nm=String(d.name||d.from||p.name).slice(0,24);
+
  switch(d.t){
-  case 'm':{peer=nm;const m={id:String(d.id).slice(0,16),name:nm,text:String(d.text||'').slice(0,4000),ts:Date.now()};if(d.re&&d.re.text)m.re={name:String(d.re.name||'').slice(0,24),text:String(d.re.text).slice(0,80)};addText(m,false);tx({t:'ack',id:m.id});$('typing').textContent='';notify(m.text);break}
-  case 'ack':{const b=ids[d.id];if(b&&b.st)b.st.textContent='✓✓';break}
-  case 'rx':{const b=ids[d.id];if(b&&b.rx){b.pe=!!d.on;rxRender(b)}break}
-  case 'ty':peer=nm;$('typing').textContent=peer+' digitando…';clearTimeout(tyT);tyT=setTimeout(()=>$('typing').textContent='',2500);break;
-  case 'fs':{peer=nm;const fname=String(d.name||'arquivo').slice(0,120),size=Math.max(+d.size||0,0);
-   rx={size:size||1,mime:String(d.mime||''),parts:[],got:0,f:fileBubble(false,nm,fname,size,fname)};break}
-  case 'fe':if(rx){rx.f.done(new Blob(rx.parts,{type:rx.mime}));rx=null;notify('📎 arquivo recebido')}break;
-  case 'hi':{peer=nm;pid=String(d.id||'').slice(0,40)||null;if(pid){const c=getC();c[pid]={name:nm,ts:Date.now()};ls.set('nx_contacts',JSON.stringify(c));renderContacts();showChat(pid,nm);sys('🔗 Conectado a '+nm)}break}
-  case 'edit':{const b=ids[d.id];if(b&&b.tx&&b.classList.contains('other')){const t=String(d.text||'').slice(0,4000);fill(b.tx,t);b.ed.textContent='editada';updH(d.id,o=>({...o,text:t}))}break}
-  case 'del':{const b=ids[d.id];if(b&&b.classList.contains('other')){b.remove();delete ids[d.id];updH(d.id,()=>null)}break}
-  case 'sdp':onSdp(d.d);break;
-  case 'call':if(callSt){tx({t:'end'});break}peer=nm;inV=!!d.v;$('cName').textContent=nm;$('cAv').textContent=ini(nm);setCall('in',d.v?'Chamada de vídeo':'Chamada de voz');ringtone(true);navigator.vibrate?.([300,200,300]);notify('📞 chamada de '+nm);break;
-  case 'acc':ringtone(false);setCall('act');tick();break;
-  case 'end':endCall();break;
-  case 'bye':sys('O parceiro encerrou a conexão.');drop();break}}
+  case 'hi':{
+   const realId=cleanId(d.id||'');
+   p.name=nm;if(d.pub)p.pub=d.pub;
+   if(!p.roomId&&realId.length===8&&p.id!==realId){
+    peers.delete(p.key);p.id=realId;p.key=peerKey(realId,null);peers.set(p.key,p);
+   }
+   const targetChat=p.roomId||p.id;
+   if(!p.roomId){
+    await ensureChat(targetChat,'dm',nm,{pub:d.pub||chatsCache.get(targetChat)?.pub});
+    if(!activeChatId||activeChatId===targetChat||activeChatId.startsWith('manual_'))await showChat(targetChat);
+    sys('🔗 Conectado a '+nm);
+   }else{
+    if(activeChatId===p.roomId)sys('👤 '+nm+' entrou.');
+   }
+   updateHeaderStatus();renderContacts();break;
+  }
+  case 'm':{
+   p.name=nm;const ttl=+d.ttl||0;
+   const m={id:String(d.id).slice(0,24),chatId,kind:'text',from:p.id,name:nm,text:String(d.text||'').slice(0,4000),action:!!d.action||undefined,
+    ts:Date.now(),self:false,ttl:ttl||undefined,exp:ttl?Date.now()+ttl*1000:undefined};
+   if(d.re&&d.re.text)m.re={name:String(d.re.name||'').slice(0,24),text:String(d.re.text).slice(0,80)};
+   await DB.putMsg(m);
+   const c=chatsCache.get(chatId);
+   if(c){c.ts=Date.now();c.lastText=(p.roomId?nm+': ':'')+m.text.slice(0,40);if(activeChatId!==chatId)c.unread=(c.unread||0)+1;await DB.putChat(c);renderContacts()}
+   if(activeChatId===chatId){await renderMessage(m);if(!document.hidden){ids[m.id]._rd=true;sendToPeer(p,{t:'read',ids:[m.id]})}}
+   sendToPeer(p,{t:'ack',id:m.id});clearTyping(p.key);notify(nm+': '+m.text);break;
+  }
+  case 'poll':{
+   const m={id:String(d.id).slice(0,24),chatId,kind:'poll',from:p.id,name:nm,ts:Date.now(),self:false,poll:d.poll};
+   await DB.putMsg(m);
+   const c=chatsCache.get(chatId);if(c){c.ts=Date.now();c.lastText='📊 '+m.poll.q.slice(0,38);if(activeChatId!==chatId)c.unread=(c.unread||0)+1;await DB.putChat(c);renderContacts()}
+   if(activeChatId===chatId)await renderMessage(m);
+   notify('📊 '+nm+': '+m.poll.q);break;
+  }
+  case 'vote':{
+   const m=await DB.getMsg(d.id);if(!m||!m.poll)return;
+   const who=String(d.by||p.id);
+   m.poll.opts.forEach((o,i)=>{const s=new Set(o.votes||[]);if(i===d.opt){if(s.has(who))s.delete(who);else s.add(who)}else s.delete(who);o.votes=[...s]});
+   await DB.putMsg(m);if(ids[m.id]&&ids[m.id].pollEl)renderPollDOM(ids[m.id].pollEl,m);break;
+  }
+  case 'ack':{
+   const m=await DB.getMsg(d.id);if(m){m.ack=true;await DB.putMsg(m)}
+   const b=ids[d.id];if(b&&b.st)b.st.textContent='✓✓';break;
+  }
+  case 'read':{
+   for(const id of(d.ids||[])){
+    const m=await DB.getMsg(id);if(m){m.ack=true;m.read=true;await DB.putMsg(m)}
+    const b=ids[id];if(b&&b.st){b.st.textContent='✓✓';b.st.classList.add('read')}
+   }break;
+  }
+  case 'rx':{
+   const m=await DB.getMsg(d.id);if(!m)return;
+   const em=String(d.em||'❤️').slice(0,8),who=String(d.by||p.id);
+   m.rxs=m.rxs||{};const s=new Set(m.rxs[em]||[]);if(d.on)s.add(who);else s.delete(who);
+   m.rxs[em]=[...s];await DB.putMsg(m);if(ids[d.id])renderRxs(ids[d.id],m.rxs);break;
+  }
+  case 'ty':{
+   if(activeChatId!==chatId)return;
+   p.name=nm;clearTimeout(tyTimers.get(p.key));
+   tyTimers.set(p.key,setTimeout(()=>{tyTimers.delete(p.key);renderTyping()},2500));
+   renderTyping();break;
+  }
+  case 'edit':{
+   const m=await DB.getMsg(d.id);if(!m||m.self)return;
+   m.text=String(d.text||'').slice(0,4000);m.edited=true;await DB.putMsg(m);
+   const b=ids[d.id];if(b&&b.tx){fillRich(b.tx,m.text);b.ed.textContent='editada'}break;
+  }
+  case 'del':{
+   const m=await DB.getMsg(d.id);if(m&&!m.self)await removeMsg(d.id);break;
+  }
+  case 'pin':{
+   if(activeChatId===chatId){if(d.id)setPin(d.id,String(d.name||nm),String(d.text||''),false);else clearPin(false)}break;
+  }
+  case 'fs':{
+   const fname=String(d.name||'arquivo').slice(0,120),size=Math.max(+d.size||0,0),fid=String(d.id||uid());
+   const ui=activeChatId===chatId?liveFileBubble(false,nm,fname,size,()=>{if(p.rx){p.rx.cancel=true;p.rx.f?.fail('cancelado');p.rx=null;sendToPeer(p,{t:'fc',id:fid})}}):null;
+   p.rx={id:fid,chatId,fromName:nm,fname,size,mime:String(d.mime||''),parts:[],got:0,cancel:false,f:ui};break;
+  }
+  case 'fc':{
+   if(d.id)p.txCancels.add(d.id);
+   if(p.rx){p.rx.f?.fail('cancelado pelo remetente');p.rx=null}break;
+  }
+  case 'fe':{
+   if(p.rx&&!p.rx.cancel){
+    const r=p.rx;p.rx=null;
+    const blob=new Blob(r.parts,{type:r.mime});
+    const mediaId='md_'+uid();
+    await DB.putMedia({id:mediaId,chatId:r.chatId,blob,name:r.fname,mime:r.mime,size:blob.size,ts:Date.now()});
+    const m={id:r.id,chatId:r.chatId,kind:'file',from:p.id,name:r.fromName,ts:Date.now(),self:false,mediaId,fileMeta:{name:r.fname,size:blob.size,mime:r.mime}};
+    await DB.putMsg(m);
+    const c=chatsCache.get(r.chatId);if(c){c.ts=Date.now();c.lastText='📎 '+r.fname;if(activeChatId!==r.chatId)c.unread=(c.unread||0)+1;await DB.putChat(c);renderContacts()}
+    if(r.f)r.f.remove();
+    if(activeChatId===r.chatId)await renderMessage(m);
+    notify('📎 '+r.fromName+': '+r.fname);
+   }break;
+  }
+  case 'ping':{sendToPeer(p,{t:'pong',ts:d.ts});break}
+  case 'pong':{p.rtt=Math.max(1,Math.round(performance.now()-d.ts));updateHeaderStatus();break}
+  case 'wb':{wbDrawLine(d.x0,d.y0,d.x1,d.y1,d.col,d.sz,false);break}
+  case 'wb_clr':{wbCtx.clearRect(0,0,800,500);wbHistory=[];break}
+  case 'sdp':{await onPeerSdp(p,d.d);break}
+  case 'ice':{try{if(d.c&&!p.ignoreOffer)await p.pc.addIceCandidate(d.c)}catch{}break}
+  case 'call':{onIncomingCall(p,d);break}
+  case 'acc':{if(callState==='out'){ringtone(false);setCallState('act');startCallClock()}break}
+  case 'end':{removeCallTile(p.key);if(callState&&activeCallPeerCount()===0)endCall(false);break}
+  case 'bye':{closePeer(p.key);break}
+ }
+}
 
-/* ---------- Arquivos (em blocos, com barra de progresso) ---------- */
-function fileBubble(self,name,label,size,fname){const b=bubble(self,name,Date.now()),info=el('div','fi','📄 '+label+' · '+human(size)),bar=el('div','bar'),fill=el('i');
- bar.append(fill);b.append(info,bar);scroll();fname=fname||label;
- return{prog:f=>{fill.style.width=Math.min(100,f*100)+'%'},
-  fail(){bar.remove();info.textContent+=' — falhou'},
-  done(blob){bar.remove();const u=URL.createObjectURL(blob),t=blob.type;
-   if(t.startsWith('audio/')){const a=el('audio');a.controls=true;a.src=u;info.replaceWith(a)}
-   else{if(t.startsWith('image/')){const i=el('img','pv');i.src=u;i.alt=fname;i.onclick=()=>window.open(u);info.after(i)}
-    const dl=el('a','dl','⬇ Salvar');dl.href=u;dl.download=fname;b.append(dl)}scroll()}}}
-function sendFile(file){if(!isOpen())return toast('Conecte-se primeiro.');sending=sending.then(()=>push(file))}
-async function push(file){const f=fileBubble(true,me(),file.name,file.size,file.name),id=uid();
- try{tx({t:'fs',id,from:me(),name:file.name,size:file.size,mime:file.type});
-  for(let o=0;o<file.size;o+=CH){while(isOpen()&&dc.bufferedAmount>1048576)await sleep(25);
-   if(!isOpen())throw 0;dc.send(await file.slice(o,o+CH).arrayBuffer());f.prog((o+CH)/file.size)}
-  tx({t:'fe',id});f.done(file)}catch{f.fail()}}
+function clearTyping(key){clearTimeout(tyTimers.get(key));tyTimers.delete(key);renderTyping()}
+function renderTyping(){
+ const names=[...tyTimers.keys()].map(k=>peers.get(k)?.name).filter(Boolean);
+ $('typing').textContent=names.length?names.slice(0,2).join(', ')+' digitando…':'';
+}
+
+/* ==================== ARQUIVOS (FILA POR PAR + PERSISTÊNCIA INDEXEDDB) ==================== */
+function liveFileBubble(self,name,label,size,onCancel){
+ const b=bubble(self,name,Date.now()),info=el('div','fi'),txt=el('span','','📄 '+label+' · '+human(size)),bar=el('div','bar'),fl=el('i');
+ info.append(txt);
+ const cb=el('button','danger sm','Cancelar');cb.onclick=()=>onCancel&&onCancel();info.append(cb);
+ bar.append(fl);b.append(info,bar);scroll();
+ return{
+  prog:f=>{fl.style.width=Math.min(100,f*100)+'%'},
+  fail(why='falhou'){bar.remove();cb.remove();txt.textContent+=' — '+why},
+  remove(){b.remove()}
+ };
+}
+
+function waitBufferLow(dc){
+ return new Promise(res=>{
+  if(dc.readyState!=='open'||dc.bufferedAmount<=524288)return res();
+  const done=()=>{dc.removeEventListener('bufferedamountlow',done);clearTimeout(t);res()};
+  dc.addEventListener('bufferedamountlow',done);
+  const t=setTimeout(done,80);
+ });
+}
+
+async function sendFile(file){
+ const aps=activePeers();if(!aps.length)return toast('Conecte-se primeiro para enviar arquivos.');
+ if(file.size>104857600&&!confirm('Arquivo grande ('+human(file.size)+'). Enviar mesmo assim?'))return;
+ const fid=uid(),chatId=activeChatId;
+ const mediaId='md_'+uid();
+ await DB.putMedia({id:mediaId,chatId,blob:file,name:file.name,mime:file.type,size:file.size,ts:Date.now()});
+ const m={id:fid,chatId,kind:'file',from:myId,name:me(),ts:Date.now(),self:true,mediaId,fileMeta:{name:file.name,size:file.size,mime:file.type}};
+
+ let cancelled=false;
+ const sentPerPeer=new Map();
+ const ui=liveFileBubble(true,me(),file.name,file.size,()=>{cancelled=true;aps.forEach(p=>{p.txCancels.add(fid);sendToPeer(p,{t:'fc',id:fid})})});
+ const totalAll=Math.max(file.size,1)*aps.length;
+
+ const jobs=aps.map(p=>{
+  p.sending=p.sending.then(async()=>{
+   p.txCancels.delete(fid);
+   sendToPeer(p,{t:'fs',id:fid,from:me(),name:file.name,size:file.size,mime:file.type});
+   for(let o=0;o<file.size;o+=CH){
+    if(cancelled||p.txCancels.has(fid))throw 'cancelado';
+    if(!isPeerOpen(p))throw 'desconectado';
+    if(p.dc.bufferedAmount>1048576)await waitBufferLow(p.dc);
+    if(!isPeerOpen(p))throw 'desconectado';
+    p.dc.send(await file.slice(o,o+CH).arrayBuffer());
+    sentPerPeer.set(p.key,Math.min(o+CH,file.size));
+    let sum=0;sentPerPeer.forEach(v=>sum+=v);ui.prog(sum/totalAll);
+   }
+   if(cancelled||p.txCancels.has(fid))throw 'cancelado';
+   sendToPeer(p,{t:'fe',id:fid});
+  });
+  return p.sending;
+ });
+
+ try{
+  await Promise.all(jobs);
+  await DB.putMsg(m);
+  const ch=chatsCache.get(chatId);if(ch){ch.ts=Date.now();ch.lastText='📎 Você: '+file.name;await DB.putChat(ch);renderContacts()}
+  ui.remove();
+  if(activeChatId===chatId)await renderMessage(m);
+ }catch(err){
+  await DB.delMedia(mediaId);
+  ui.fail(typeof err==='string'?err:'falhou');
+ }
+}
+
 $('file').onchange=e=>{[...e.target.files].forEach(sendFile);e.target.value=''};
+let dragN=0;
+addEventListener('dragenter',e=>{e.preventDefault();if(++dragN===1)$('dropZone').classList.add('on')});
+addEventListener('dragleave',()=>{if(--dragN<=0){dragN=0;$('dropZone').classList.remove('on')}});
 addEventListener('dragover',e=>e.preventDefault());
-addEventListener('drop',e=>{e.preventDefault();[...(e.dataTransfer?.files||[])].forEach(sendFile)});
+addEventListener('drop',e=>{e.preventDefault();dragN=0;$('dropZone').classList.remove('on');[...(e.dataTransfer?.files||[])].forEach(sendFile)});
 addEventListener('paste',e=>{[...(e.clipboardData?.files||[])].forEach(sendFile)});
+$('lightbox').onclick=()=>$('lightbox').classList.remove('on');
 
-/* ---------- Chamadas (renegociação pelo próprio canal, sem colar códigos de novo) ---------- */
-async function onSdp(d){const p=pc;if(!p||!d)return;if(d.type==='offer'&&(making||p.signalingState!=='stable')&&!polite)return;
- try{await p.setRemoteDescription(d);if(d.type==='offer'){await p.setLocalDescription();tx({t:'sdp',d:p.localDescription})}}catch(e){console.error(e)}}
-function ringtone(on){clearInterval(ring);ring=null;if(!on)return;
- try{const c=ringCtx||(ringCtx=new(window.AudioContext||window.webkitAudioContext)()),b=()=>{const o=c.createOscillator(),g=c.createGain();o.frequency.value=440;g.gain.value=.08;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.4)};b();ring=setInterval(b,1500)}catch{}}
-const setCall=(st,t)=>{callSt=st?1:0;const c=$('call');c.dataset.s=st||'';c.classList.toggle('on',!!st);$('cSt').textContent=t||''};
-function tick(){const t0=Date.now();clearInterval(tm);tm=setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);$('cSt').textContent=String(s/60|0).padStart(2,'0')+':'+String(s%60).padStart(2,'0')},1000)}
-async function media(v){try{stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true},video:v?{facingMode:facing}:false});
- stream.getTracks().forEach(t=>pc.addTrack(t,stream));$('lv').srcObject=stream;$('lv').style.display=v?'block':'none';
- ['cCam','cFlip','cShare'].forEach(i=>$(i).style.display=v?'':'none');['cMute','cCam'].forEach(i=>$(i).style.opacity=1);return true}
- catch{toast('Sem acesso à câmera/microfone.');return false}}
-async function startCall(v){if(!isOpen())return toast('Conecte-se primeiro.');if(callSt)return;if(!await media(v))return;
- $('cName').textContent=peer;$('cAv').textContent=ini(peer);setCall('out','Chamando…');ringtone(true);tx({t:'call',v,name:me()})}
-function endCall(send){if(send)tx({t:'end'});ringtone(false);clearInterval(tm);if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
- try{pc.getSenders().forEach(s=>s.track&&pc.removeTrack(s))}catch{}$('rv').srcObject=null;$('call').classList.remove('vid');setCall(0)}
-const tog=(k,b)=>{if(!stream)return;let off;stream[k]().forEach(t=>{t.enabled=!t.enabled;off=!t.enabled});$(b).style.opacity=off?.4:1};
+/* ==================== QUADRO BRANCO P2P (COM DESFAZER & BORRACHA) ==================== */
+const wbC=$('wbCanvas'),wbCtx=wbC.getContext('2d');
+let wbDown=false,wbCol='#00f0ff',wbPx=0,wbPy=0,wbHistory=[];
+function wbSnap(){if(wbHistory.length>15)wbHistory.shift();wbHistory.push(wbCtx.getImageData(0,0,800,500))}
+function wbDrawLine(x0,y0,x1,y1,col,sz,emit=true){
+ wbCtx.strokeStyle=col;wbCtx.lineWidth=sz;wbCtx.lineCap='round';wbCtx.lineJoin='round';
+ wbCtx.beginPath();wbCtx.moveTo(x0*800,y0*500);wbCtx.lineTo(x1*800,y1*500);wbCtx.stroke();
+ if(emit)broadcastActive({t:'wb',x0,y0,x1,y1,col,sz});
+}
+const wbPos=e=>{const r=wbC.getBoundingClientRect();return[(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height]};
+wbC.onpointerdown=e=>{wbSnap();wbDown=true;wbC.setPointerCapture(e.pointerId);[wbPx,wbPy]=wbPos(e)};
+wbC.onpointermove=e=>{if(!wbDown)return;const[x,y]=wbPos(e),sz=+$('wbSize').value;wbDrawLine(wbPx,wbPy,x,y,wbCol,sz,true);wbPx=x;wbPy=y};
+wbC.onpointerup=wbC.onpointercancel=()=>{wbDown=false};
+document.querySelectorAll('.swatch').forEach(s=>s.onclick=()=>{document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('act'));s.classList.add('act');wbCol=s.dataset.col});
+$('wbBtn').onclick=()=>{if(!activePeers().length)return toast('Conecte-se primeiro para usar o quadro branco.');$('wbModal').classList.add('on')};
+$('wbClose').onclick=()=>$('wbModal').classList.remove('on');
+$('wbUndo').onclick=()=>{const img=wbHistory.pop();if(img)wbCtx.putImageData(img,0,0)};
+$('wbClear').onclick=()=>{wbSnap();wbCtx.clearRect(0,0,800,500);broadcastActive({t:'wb_clr'})};
+$('wbSend').onclick=()=>wbC.toBlob(b=>{if(b){sendFile(new File([b],'quadro-'+Date.now()+'.png',{type:'image/png'}));$('wbModal').classList.remove('on')}});
+
+/* ==================== CHAMADAS DE VOZ & VÍDEO (DM & MALHA DE GRUPO) ==================== */
+async function onPeerSdp(p,d){
+ if(!p||!d)return;
+ const readyForOffer=!p.making&&(p.pc.signalingState==='stable'||p.isSettingRemoteAnswerPending);
+ const offerCollision=d.type==='offer'&&!readyForOffer;
+ p.ignoreOffer=!p.polite&&offerCollision;
+ if(p.ignoreOffer)return;
+ try{
+  p.isSettingRemoteAnswerPending=d.type==='answer';
+  await p.pc.setRemoteDescription(d);
+  p.isSettingRemoteAnswerPending=false;
+  if(d.type==='offer'){await p.pc.setLocalDescription();sendToPeer(p,{t:'sdp',d:p.pc.localDescription})}
+ }catch(e){console.error('onPeerSdp',e);p.isSettingRemoteAnswerPending=false}
+}
+
+function ringtone(on){
+ clearInterval(ringInt);ringInt=null;if(!on)return;
+ try{const c=ringCtx||(ringCtx=new(window.AudioContext||window.webkitAudioContext)());if(c.state==='suspended')c.resume();
+  const b=()=>{const o=c.createOscillator(),g=c.createGain();o.frequency.value=440;g.gain.value=.07;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.35)};
+  b();ringInt=setInterval(b,1500)}catch{}
+}
+
+function setCallState(st,txt=''){
+ callState=st||'';const c=$('call');c.dataset.s=callState;c.classList.toggle('on',!!callState);
+ if(txt)$('cSt').textContent=txt;updateCallCount();
+}
+function startCallClock(){
+ const t0=Date.now();clearInterval(callTimer);
+ callTimer=setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);$('cSt').textContent=String(s/60|0).padStart(2,'0')+':'+String(s%60).padStart(2,'0')},1000);
+}
+const safeTileId=k=>'tile_'+k.replace(/[^a-zA-Z0-9_-]/g,'_');
+function ensureTile(key,name,isLocal=false){
+ const tid=safeTileId(key);let t=$(tid);
+ if(!t){
+  t=el('div','ctile');t.id=tid;
+  const v=el('video');v.autoplay=true;v.playsInline=true;if(isLocal)v.muted=true;
+  const av=el('div','cav');av.append(el('div','av big',ini(name)),el('b','',name));
+  t.append(v,av,el('span','cname',isLocal?name+' (Você)':name));
+  $('callGrid').append(t);
+ }
+ return t;
+}
+function attachLocalTile(){
+ const t=ensureTile('local',me(),true),v=t.querySelector('video');
+ v.srcObject=localStream;
+ const hasVid=localStream&&localStream.getVideoTracks().some(tr=>tr.readyState==='live'&&tr.enabled);
+ t.classList.toggle('hasvid',!!hasVid);v.classList.toggle('mirror',facing==='user'&&!t._sharing);
+ updateCallCount();
+}
+function attachRemoteTile(p,st){
+ if(!callState)return;
+ const t=ensureTile(p.key,p.name,false),v=t.querySelector('video');
+ v.srcObject=st;
+ const hasVid=st.getVideoTracks().some(tr=>tr.readyState==='live'&&!tr.muted);
+ t.classList.toggle('hasvid',hasVid);
+ updateCallCount();
+}
+function removeCallTile(key){const t=$(safeTileId(key));if(t)t.remove();updateCallCount()}
+function activeCallPeerCount(){return[...$('callGrid').children].filter(x=>x.id!=='tile_local').length}
+function updateCallCount(){const n=$('callGrid').children.length;$('cCount').textContent=n>1?n+' na chamada':''}
+
+async function getLocalMedia(v){
+ try{
+  localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true},video:v?{facingMode:facing}:false});
+  callVideo=v;attachLocalTile();
+  ['cCam','cFlip'].forEach(i=>$(i).style.display=v?'':'none');
+  ['cMute','cCam'].forEach(i=>$(i).style.opacity=1);
+  return true;
+ }catch{toast('Sem acesso à câmera/microfone.');return false}
+}
+
+async function startCall(v){
+ const aps=activePeers();if(!aps.length)return toast('Conecte-se primeiro.');
+ if(callState)return;
+ if(!await getLocalMedia(v))return;
+ const ch=chatsCache.get(activeChatId);
+ callRoomId=ch?.type==='room'?ch.id:null;
+ $('cName').textContent=ch?ch.name:'Chamada';
+ aps.forEach(p=>{ensureTile(p.key,p.name,false);localStream.getTracks().forEach(t=>p.pc.addTrack(t,localStream))});
+ setCallState('out','Chamando…');ringtone(true);
+ aps.forEach(p=>sendToPeer(p,{t:'call',v,name:me(),room:callRoomId}));
+}
+
+let incomingFromPeer=null;
+function onIncomingCall(p,d){
+ if(callState){
+  if(d.room&&d.room===callRoomId&&localStream){
+   ensureTile(p.key,p.name,false);
+   localStream.getTracks().forEach(t=>p.pc.addTrack(t,localStream));
+   sendToPeer(p,{t:'acc'});return;
+  }
+  sendToPeer(p,{t:'end'});return;
+ }
+ incomingFromPeer=p;callVideo=!!d.v;callRoomId=d.room||null;
+ $('cName').textContent=d.room?(chatsCache.get(d.room)?.name||p.name):p.name;
+ ensureTile(p.key,p.name,false);
+ setCallState('in',d.v?'Chamada de vídeo recebida':'Chamada de voz recebida');
+ ringtone(true);navigator.vibrate?.([300,200,300]);notify('📞 Chamada de '+p.name);
+}
+
+function endCall(notifyPeers=true){
+ if(notifyPeers){
+  for(const p of peers.values()){
+   if(!callRoomId||p.roomId===callRoomId)sendToPeer(p,{t:'end'});
+  }
+ }
+ ringtone(false);clearInterval(callTimer);callTimer=null;incomingFromPeer=null;callRoomId=null;
+ if(shareStream){shareStream.getTracks().forEach(t=>t.stop());shareStream=null}
+ if(localStream){localStream.getTracks().forEach(t=>t.stop());localStream=null}
+ for(const p of peers.values()){try{p.pc.getSenders().forEach(s=>s.track&&p.pc.removeTrack(s))}catch{}}
+ $('callGrid').replaceChildren();setCallState('');
+}
+
 $('aCall').onclick=()=>startCall(false);$('vCall').onclick=()=>startCall(true);
-$('cAcc').onclick=async()=>{ringtone(false);if(await media(inV)){setCall('act');tick();tx({t:'acc'})}else endCall(true)};
+$('cAcc').onclick=async()=>{
+ ringtone(false);
+ if(!await getLocalMedia(callVideo))return endCall(true);
+ const targets=callRoomId?[...peers.values()].filter(p=>p.roomId===callRoomId&&isPeerOpen(p)):(incomingFromPeer?[incomingFromPeer]:[]);
+ targets.forEach(p=>{ensureTile(p.key,p.name,false);localStream.getTracks().forEach(t=>p.pc.addTrack(t,localStream));if(p.remoteStream)attachRemoteTile(p,p.remoteStream);sendToPeer(p,{t:'acc'})});
+ setCallState('act');startCallClock();
+};
 $('cRej').onclick=$('cEnd').onclick=()=>endCall(true);
-$('cMute').onclick=()=>tog('getAudioTracks','cMute');$('cCam').onclick=()=>tog('getVideoTracks','cCam');
-$('cFlip').onclick=async()=>{if(!stream)return;facing=facing==='user'?'environment':'user';
- try{const n=(await navigator.mediaDevices.getUserMedia({video:{facingMode:facing}})).getVideoTracks()[0],s=pc.getSenders().find(x=>x.track&&x.track.kind==='video');
-  stream.getVideoTracks().forEach(t=>{t.stop();stream.removeTrack(t)});stream.addTrack(n);if(s)await s.replaceTrack(n);$('lv').srcObject=stream}catch{toast('Não foi possível virar a câmera.')}};
-$('cShare').onclick=async()=>{const s=pc&&pc.getSenders().find(x=>x.track&&x.track.kind==='video');
- if(!s||!navigator.mediaDevices.getDisplayMedia)return toast('Compartilhar tela indisponível neste aparelho.');
- try{const d=(await navigator.mediaDevices.getDisplayMedia({video:true})).getVideoTracks()[0],old=s.track;await s.replaceTrack(d);$('lv').srcObject=new MediaStream([d]);
-  d.onended=async()=>{await s.replaceTrack(old);$('lv').srcObject=stream}}catch{}};
-const clearReply=()=>{reply=null;$('replyBar').classList.remove('on')};$('replyX').onclick=clearReply;
-$('hostBtn').addEventListener('click',()=>{if(window.Notification&&Notification.permission==='default')Notification.requestPermission()});
+$('cMute').onclick=()=>{if(!localStream)return;let off;localStream.getAudioTracks().forEach(t=>{t.enabled=!t.enabled;off=!t.enabled});$('cMute').style.opacity=off?.4:1};
+$('cCam').onclick=()=>{if(!localStream)return;let off;localStream.getVideoTracks().forEach(t=>{t.enabled=!t.enabled;off=!t.enabled});$('cCam').style.opacity=off?.4:1;attachLocalTile()};
+$('cFlip').onclick=async()=>{
+ if(!localStream)return;facing=facing==='user'?'environment':'user';
+ try{
+  const n=(await navigator.mediaDevices.getUserMedia({video:{facingMode:facing}})).getVideoTracks()[0];
+  localStream.getVideoTracks().forEach(t=>{t.stop();localStream.removeTrack(t)});localStream.addTrack(n);
+  for(const p of peers.values()){const s=p.pc.getSenders().find(x=>x.track&&x.track.kind==='video');if(s)await s.replaceTrack(n)}
+  attachLocalTile();
+ }catch{toast('Não foi possível virar a câmera.')}
+};
+$('cShare').onclick=async()=>{
+ if(!navigator.mediaDevices?.getDisplayMedia)return toast('Compartilhar tela indisponível neste aparelho.');
+ try{
+  const ds=shareStream=await navigator.mediaDevices.getDisplayMedia({video:true}),d=ds.getVideoTracks()[0];
+  const targets=callRoomId?[...peers.values()].filter(p=>p.roomId===callRoomId&&isPeerOpen(p)):activePeers();
+  const addedList=[];const oldTrack=localStream?.getVideoTracks()[0]||null;
+  for(const p of targets){
+   let s=p.pc.getSenders().find(x=>x.track&&x.track.kind==='video');
+   if(s)await s.replaceTrack(d);else{s=p.pc.addTrack(d,ds);addedList.push([p,s])}
+  }
+  const tile=$(safeTileId('local'));if(tile){tile._sharing=true;const v=tile.querySelector('video');v.srcObject=new MediaStream([d]);v.classList.remove('mirror');tile.classList.add('hasvid')}
+  d.onended=async()=>{
+   shareStream=null;
+   if(!callState)return;
+   if(tile)tile._sharing=false;
+   for(const[p,s]of addedList)try{p.pc.removeTrack(s)}catch{}
+   if(oldTrack&&oldTrack.readyState==='live'){
+    for(const p of targets){const s=p.pc.getSenders().find(x=>x.track&&x.track.kind==='video');if(s)try{await s.replaceTrack(oldTrack)}catch{}}
+   }
+   attachLocalTile();
+  };
+ }catch{}
+};
 
-/* ---------- Voz ---------- */
-$('mic').onclick=async()=>{if(rec){rec.stop();return}
- if(!isOpen())return toast('Conecte-se primeiro.');
- try{const s=await navigator.mediaDevices.getUserMedia({audio:true}),chunks=[];
+/* ==================== GRAVADOR DE VOZ COM TIMER & CANCELAMENTO ==================== */
+$('mic').onclick=async()=>{
+ if(rec){$('recSend').click();return}
+ if(!activePeers().length)return toast('Conecte-se primeiro.');
+ try{
+  recStream=await navigator.mediaDevices.getUserMedia({audio:true});const chunks=[];recAborted=false;
   const mt=['audio/webm;codecs=opus','audio/mp4','audio/webm'].find(t=>MediaRecorder.isTypeSupported(t));
-  const r=rec=new MediaRecorder(s,mt?{mimeType:mt}:{});
+  const r=rec=new MediaRecorder(recStream,mt?{mimeType:mt}:{});
   r.ondataavailable=e=>e.data.size&&chunks.push(e.data);
-  r.onstop=()=>{s.getTracks().forEach(t=>t.stop());rec=null;$('mic').classList.remove('rec');
+  r.onstop=()=>{
+   recStream.getTracks().forEach(t=>t.stop());recStream=null;rec=null;clearInterval(recTm);
+   $('mic').classList.remove('rec');$('recBar').classList.remove('on');
+   if(recAborted)return;
    const blob=new Blob(chunks,{type:r.mimeType||'audio/webm'});
-   if(blob.size)sendFile(new File([blob],'voz-'+Date.now()+(blob.type.includes('mp4')?'.m4a':'.webm'),{type:blob.type}))};
-  r.start();$('mic').classList.add('rec');toast('Gravando… toque de novo para enviar')}
- catch{toast('Microfone indisponível ou permissão negada.')}};
+   if(blob.size)sendFile(new File([blob],'voz-'+Date.now()+(blob.type.includes('mp4')?'.m4a':'.webm'),{type:blob.type}));
+  };
+  r.start();recStart=Date.now();$('mic').classList.add('rec');$('recBar').classList.add('on');$('recTime').textContent='00:00';
+  recTm=setInterval(()=>{const s=Math.floor((Date.now()-recStart)/1000);$('recTime').textContent=String(s/60|0).padStart(2,'0')+':'+String(s%60).padStart(2,'0')},500);
+ }catch{toast('Microfone indisponível ou permissão negada.')}
+};
+$('recCancel').onclick=()=>{if(rec){recAborted=true;rec.stop();toast('Áudio descartado.')}};
+$('recSend').onclick=()=>{if(rec){recAborted=false;rec.stop()}};
 
-/* ---------- Emojis, menu e eventos ---------- */
+/* ==================== DIAGNÓSTICO, TURN, PIN LOCK & QUOTA ==================== */
+async function updateDiag(){
+ const aps=activePeers(),ch=activeChatId?chatsCache.get(activeChatId):null;
+ const sas=ch&&ch.type==='dm'&&ch.pub?await computeSas(myPubJwk,ch.pub):null;
+ $('sasBox').textContent=sas?sas.em:(ch?.type==='room'?'Sala de grupo':'Conecte-se a um contato');
+ $('sasHex').textContent=sas?'Fingerprint: '+sas.hex:'';
+ const rtts=aps.map(p=>p.rtt).filter(Boolean);
+ $('stRtt').textContent=rtts.length?Math.round(rtts.reduce((a,b)=>a+b,0)/rtts.length)+' ms':'—';
+ const ms=await DB.mediaStats();
+ $('stDb').textContent=ms.count+' arqs · '+human(ms.bytes);
+
+ if(aps[0]){
+  try{const st=await aps[0].pc.getStats();let ice='—';
+   st.forEach(r=>{if(r.type==='candidate-pair'&&r.state==='succeeded'){const l=st.get(r.localCandidateId),rm=st.get(r.remoteCandidateId);ice=(l?.candidateType||'?')+' ↔ '+(rm?.candidateType||'?')}});
+   $('stIce').textContent=ice}catch{$('stIce').textContent='—'}
+ }else $('stIce').textContent='—';
+
+ const pl=$('peerList');pl.replaceChildren();
+ if(!peers.size)pl.append(el('small','','Ninguém conectado.'));
+ for(const p of peers.values()){
+  const chip=el('div','peer-chip');
+  chip.append(el('span','',(p.roomId?'['+p.roomId.slice(5)+'] ':'')+p.name+(p.pub?' 🔒':'')),el('span','mono',isPeerOpen(p)?((p.rtt||'—')+'ms 🟢'):'⏳'));
+  pl.append(chip);
+ }
+}
+const openDiag=()=>{updateDiag();$('diagModal').classList.add('on')};
+$('diagOpen').onclick=openDiag;$('pingBadge').onclick=openDiag;$('diagClose').onclick=()=>$('diagModal').classList.remove('on');
+
+$('saveTurn').onclick=async()=>{
+ const urls=$('turnUrl').value.trim();if(!urls)return toast('Informe a URL TURN.');
+ turnCfg={urls,username:$('turnUser').value.trim(),credential:$('turnPass').value};
+ await DB.setKV('turn',turnCfg);toast('TURN salvo.');
+};
+$('clrTurn').onclick=async()=>{turnCfg=null;await DB.delKV('turn');$('turnUrl').value=$('turnUser').value=$('turnPass').value='';toast('TURN removido.')};
+$('purgeMedia').onclick=async()=>{if(!confirm('Apagar mídias salvas? (Textos continuam salvos)'))return;
+ await DB.purgeAllMedia();revokeBlobs();if(activeChatId)await showChat(activeChatId);updateDiag();toast('Cache de mídia limpo!')};
+
+async function hashPin(pin){return b64(await sha('nxpin:'+myId+':'+pin))}
+$('savePin').onclick=async()=>{const p=$('newPin').value.trim();if(p.length<4)return toast('PIN deve ter pelo menos 4 dígitos.');
+ pinHash=await hashPin(p);await DB.setKV('pin_hash',pinHash);$('newPin').value='';toast('PIN ativado!')};
+$('clrPin').onclick=async()=>{pinHash=null;await DB.delKV('pin_hash');toast('PIN removido.')};
+function lockApp(){if(!pinHash)return openDiag();$('pinIn').value='';$('lockScreen').classList.add('on');$('pinIn').focus()}
+$('lockBtn').onclick=lockApp;
+async function tryUnlock(){if(!pinHash){$('lockScreen').classList.remove('on');return}
+ if(await hashPin($('pinIn').value.trim())===pinHash){$('lockScreen').classList.remove('on');$('pinIn').value=''}
+ else{$('lockMsg').textContent='PIN incorreto. Tente novamente.';$('pinIn').value=''}}
+$('pinGo').onclick=tryUnlock;$('pinIn').addEventListener('keydown',e=>{if(e.key==='Enter')tryUnlock()});
+
+/* ==================== UI, EVENTOS, BACKUP & MIGRAÇÃO ==================== */
 const em=$('emoji');'😀 😂 😍 🥰 😎 🤔 😭 😡 👍 👎 🙏 👏 🔥 💜 ❤️ 💯 🎉 👀 😅 🤝 💀 ✨ 🚀 🤖'.split(' ').forEach(x=>{const s=el('span','',x);s.onclick=()=>{inp.value+=x;inp.focus()};em.append(s)});
-$('emojiBtn').onclick=()=>{em.hidden=!em.hidden};
+const rxPop=$('rxPop');RX_LIST.forEach(x=>{const s=el('span','',x);s.onclick=()=>{if(rxTargetId)toggleRx(rxTargetId,x);rxPop.hidden=true};rxPop.append(s)});
+function openRxPop(id,anchor){rxTargetId=id;const r=anchor.getBoundingClientRect(),mr=document.querySelector('main').getBoundingClientRect();
+ rxPop.hidden=false;rxPop.style.left=Math.max(8,Math.min(mr.width-220,r.left-mr.left-80))+'px';rxPop.style.top=Math.max(54,r.top-mr.top-46)+'px'}
+$('emojiBtn').onclick=e=>{e.stopPropagation();em.hidden=!em.hidden};
+document.addEventListener('click',()=>{rxPop.hidden=true;em.hidden=true});
+
+function updateTtlBtn(){const v=TTL_MODES[ttlIdx];$('ttlBtn').classList.toggle('on',!!v);$('ttlBtn').textContent=v?(v<60?v+'s':(v/60)+'m'):'⏱'}
+$('ttlBtn').onclick=()=>{ttlIdx=(ttlIdx+1)%TTL_MODES.length;updateTtlBtn();toast(TTL_MODES[ttlIdx]?'Mensagens efêmeras: '+TTL_MODES[ttlIdx]+'s':'Mensagens efêmeras desativadas')};
+
+$('pollBtn').onclick=()=>{if(!activePeers().length)return toast('Conecte-se primeiro.');$('pollQ').value='';$('pollOpts').value='';$('pollModal').classList.add('on');$('pollQ').focus()};
+$('pollClose').onclick=()=>$('pollModal').classList.remove('on');
+$('pollSend').onclick=async()=>{
+ const q=$('pollQ').value.trim(),opts=$('pollOpts').value.split('\n').map(x=>x.trim()).filter(Boolean).slice(0,6);
+ if(!q||opts.length<2)return toast('Digite uma pergunta e pelo menos 2 opções.');
+ $('pollModal').classList.remove('on');await createAndSendPoll(q,opts);
+};
+
+$('tabDm').onclick=()=>{$('tabDm').classList.add('act');$('tabRoom').classList.remove('act');$('paneDm').style.display='flex';$('paneRoom').style.display='none'};
+$('tabRoom').onclick=()=>{$('tabRoom').classList.add('act');$('tabDm').classList.remove('act');$('paneRoom').style.display='flex';$('paneDm').style.display='none'};
+$('joinRoomBtn').onclick=()=>joinRoom($('roomCodeIn').value,$('roomPassIn').value);
+$('newRoomBtn').onclick=()=>{const code='NX-'+genId().slice(0,5);$('roomCodeIn').value=code;joinRoom(code,$('roomPassIn').value)};
+$('roomShareBtn').onclick=()=>{const c=chatsCache.get(activeChatId);if(!c||c.type!=='room')return;
+ copyTxt(location.origin+location.pathname+'#room='+encodeURIComponent(c.roomCode||c.name.slice(1)));toast('Link da sala copiado!')};
+
+const clearReply=()=>{reply=null;$('replyBar').classList.remove('on')};$('replyX').onclick=clearReply;
 const closeMenu=()=>side.classList.remove('open');
 $('menuBtn').onclick=()=>side.classList.add('open');$('xBtn').onclick=closeMenu;$('scrim').onclick=closeMenu;
-addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenu();em.hidden=true}});
-inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send()}});
-inp.addEventListener('input',()=>{if(Date.now()-lastTy>2000){lastTy=Date.now();tx({t:'ty',name:me()})}});
-$('send').onclick=send;$('hostBtn').onclick=host;$('procBtn').onclick=process;
-$('byeBtn').onclick=()=>{tx({t:'bye'});drop();sys('Você se desconectou.')};
-$('clrBtn').onclick=()=>{if(confirm('Apagar o histórico desta conversa?')){if(pid)ls.set('nx_h_'+pid,'[]');hist.replaceChildren();lastDay='';sys('Histórico apagado.')}};
-$('expBtn').onclick=()=>{const h=pid?getH(pid):[];if(!h.length)return toast('Nada para exportar.');
- const a=el('a');a.href=URL.createObjectURL(new Blob([h.map(m=>`[${new Date(m.ts).toLocaleString('pt-BR')}] ${m.name}: ${m.text}`).join('\n')],{type:'text/plain'}));a.download='nexus-conversa.txt';a.click()};
-$('q').oninput=e=>{const v=e.target.value.toLowerCase();[...hist.children].forEach(c=>{if(c.classList.contains('msg'))c.style.display=c.textContent.toLowerCase().includes(v)?'':'none'})};
-nameIn.value=ls.get('nx_name')||'';nameIn.oninput=()=>ls.set('nx_name',nameIn.value.trim());
-document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{const t=$(b.dataset.copy);if(!t.value||t.value.endsWith('…'))return toast('Nada para copiar ainda.');
- try{await navigator.clipboard.writeText(t.value)}catch{t.select();document.execCommand('copy')}toast('Copiado!')});
+
+addEventListener('keydown',e=>{
+ if(e.key==='Escape'){closeMenu();em.hidden=true;rxPop.hidden=true;document.querySelectorAll('.modal').forEach(m=>m.classList.remove('on'))}
+ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('q').focus()}
+ if(e.altKey&&e.key.toLowerCase()==='l'){e.preventDefault();lockApp()}
+});
+
+inp.addEventListener('keydown',e=>{
+ if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send()}
+ if(e.key==='ArrowUp'&&!inp.value&&lastSentId){e.preventDefault();editMessagePrompt(lastSentId)}
+});
+inp.addEventListener('input',()=>{
+ inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,130)+'px';
+ if(Date.now()-lastTy>2000){lastTy=Date.now();broadcastActive({t:'ty',name:me()})}
+});
+
+$('send').onclick=send;$('dialBtn').onclick=()=>dialDM($('dialId').value);
+$('dialId').addEventListener('keydown',e=>{if(e.key==='Enter')dialDM($('dialId').value)});
+$('hostBtn').onclick=()=>{if(window.Notification&&Notification.permission==='default')Notification.requestPermission();manualHost()};
+$('procBtn').onclick=manualProcess;
+$('byeBtn').onclick=()=>{if(activeChatId&&chatsCache.get(activeChatId)?.type==='room')closeAllPeers(activeChatId);else closeAllPeers();sys('Desconectado.')};
+$('clrBtn').onclick=async()=>{if(!activeChatId||!confirm('Apagar todo o histórico e mídias desta conversa?'))return;
+ await DB.clearChatMsgs(activeChatId);revokeBlobs();hist.replaceChildren();lastDay='';expMap.clear();clearPin(false);sys('Histórico apagado.')};
+$('expBtn').onclick=async()=>{
+ if(!activeChatId)return toast('Abra uma conversa para exportar.');
+ const h=await DB.getMsgs(activeChatId);if(!h.length)return toast('Nada para exportar.');
+ const lines=h.map(m=>`[${new Date(m.ts).toLocaleString('pt-BR')}] ${m.name}: ${m.text||m.poll?.q||('[Arquivo: '+(m.fileMeta?.name||'')+']')}`);
+ const u=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/plain'}));
+ const a=el('a');a.href=u;a.download='nexus-'+activeChatId.replace(/:/g,'-')+'.txt';a.click();setTimeout(()=>URL.revokeObjectURL(u),5000);
+};
+
+$('q').oninput=e=>{
+ const v=e.target.value.toLowerCase().trim();let hits=0;
+ [...hist.children].forEach(c=>{
+  if(c.classList.contains('msg')){const ok=!v||c.textContent.toLowerCase().includes(v);c.style.display=ok?'':'none';if(ok&&v)hits++}
+  else if(c.classList.contains('day-sep'))c.style.display=v?'none':'';
+ });
+ $('qCount').style.display=v?'inline':'none';$('qCount').textContent=hits+'x';
+};
+
+nameIn.oninput=()=>{myName=nameIn.value.trim();DB.setKV('name',myName)};
+document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{const t=$(b.dataset.copy);if(!t.value||t.value.endsWith('…'))return toast('Nada para copiar.');await copyTxt(t.value)});
 ['offerOut','ansOut'].forEach(i=>$(i).onclick=e=>e.target.select());
 
-/* ---------- Início ---------- */
-sys('Bem-vindo ao Nexus! Passe seu ID para um amigo (ou digite o dele) e conecte com 1 clique. Depois, é só tocar em ⚡ no contato.');
-/* ---------- Conta ---------- */
-const copyTxt=async t=>{try{await navigator.clipboard.writeText(t)}catch{}toast('Copiado!')};
-function boot(){$('myid').textContent=fmtId(myId);renderContacts();listen();
- const m=location.hash.match(/add=([A-Za-z0-9-]+)/);if(m)$('dialId').value=fmtId(cleanId(m[1]));
- if(innerWidth<=768)side.classList.add('open')}
-$('lgo').onclick=()=>{const n=$('lname').value.trim();if(!n)return toast('Digite seu nome.');if(!crypto.subtle)toast('Atenção: este navegador/contexto não permite a conexão por ID.');
- myId=genId();ls.set('nx_id',myId);ls.set('nx_name',n);nameIn.value=n;$('login').classList.remove('on');boot()};
-$('limp').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(!d.nx_id)throw 0;Object.keys(d).filter(k=>k.startsWith('nx_')).forEach(k=>ls.set(k,d[k]));location.reload()}catch{toast('Arquivo de conta inválido.')}};
-$('bkBtn').onclick=()=>{const d={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith('nx_'))d[k]=localStorage.getItem(k)}}catch{}
- const a=el('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='nexus-conta-'+myId+'.json';a.click()};
-$('copyId').onclick=()=>copyTxt(fmtId(myId));$('dialBtn').onclick=()=>dial($('dialId').value);
-$('dialId').addEventListener('keydown',e=>{if(e.key==='Enter')dial($('dialId').value)});
-const applyTh=()=>{document.documentElement.dataset.theme=ls.get('nx_theme')||'dark'};applyTh();
-$('thBtn').onclick=()=>{ls.set('nx_theme',(ls.get('nx_theme')||'dark')==='dark'?'light':'dark');applyTh()};
-const ntSt=()=>{$('ntBtn').textContent=window.Notification&&Notification.permission==='granted'?'🔔 Avisos ativados':'🔔 Ativar avisos neste aparelho'};ntSt();
-$('ntBtn').onclick=async()=>{if(!window.Notification)return toast('Este navegador não suporta notificações.');if(Notification.permission==='denied')return toast('Bloqueado: libere nas configurações do site.');await Notification.requestPermission();ntSt()};
-$('ntTopic').onclick=async()=>{if(myId)copyTxt(await atopic(myId))};
+const copyTxt=async t=>{try{await navigator.clipboard.writeText(t)}catch{const ta=el('textarea');ta.value=t;document.body.append(ta);ta.select();document.execCommand('copy');ta.remove()}toast('Copiado!')};
+$('copyId').onclick=()=>copyTxt(fmtId(myId));
+$('shareId').onclick=async()=>{const url=location.origin+location.pathname+'#add='+fmtId(myId);
+ if(navigator.share)try{await navigator.share({title:'Nexus P2P',text:'Conecte-se comigo no Nexus ('+fmtId(myId)+')',url});return}catch{}
+ copyTxt(url)};
+
+$('bkBtn').onclick=async()=>{
+ const kv=await DB.allKV(),chats=await DB.allChats(),msgs={};
+ for(const c of chats)msgs[c.id]=await DB.getMsgs(c.id);
+ const u=URL.createObjectURL(new Blob([JSON.stringify({v:3,kv,chats,msgs})],{type:'application/json'}));
+ const a=el('a');a.href=u;a.download='nexus-backup-'+myId+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),5000);
+};
+$('limp').onchange=async e=>{
+ try{
+  const d=JSON.parse(await e.target.files[0].text());
+  if(d.v===3&&d.kv&&d.kv.id){
+   for(const k in d.kv)await DB.setKV(k,d.kv[k]);
+   for(const c of(d.chats||[]))await DB.putChat(c);
+   for(const cid in(d.msgs||{}))for(const m of d.msgs[cid])await DB.putMsg(m);
+  }else if(d.nx_id){
+   await DB.setKV('id',d.nx_id);if(d.nx_name)await DB.setKV('name',d.nx_name);
+   if(d.nx_ecdh_priv)await DB.setKV('ecdh_priv',JSON.parse(d.nx_ecdh_priv));
+   if(d.nx_ecdh_pub)await DB.setKV('ecdh_pub',JSON.parse(d.nx_ecdh_pub));
+  }else throw 0;
+  location.reload();
+ }catch{toast('Arquivo de backup inválido.')}
+};
+
+const updSound=()=>{$('sndBtn').textContent=soundOn?'🔊':'🔇'};
+$('sndBtn').onclick=async()=>{soundOn=!soundOn;await DB.setKV('sound',soundOn);updSound();if(soundOn)beep()};
+const applyTh=()=>{document.documentElement.dataset.theme=theme};
+$('thBtn').onclick=async()=>{theme=theme==='dark'?'light':'dark';await DB.setKV('theme',theme);applyTh()};
+const ntSt=()=>{$('ntBtn').textContent=window.Notification&&Notification.permission==='granted'?'🔔 Avisos ON':'🔔 Ativar avisos'};ntSt();
+$('ntBtn').onclick=async()=>{if(!window.Notification)return toast('Sem suporte a notificações.');if(Notification.permission==='denied')return toast('Bloqueado nas configurações.');await Notification.requestPermission();ntSt()};
+$('ntTopic').onclick=async()=>{if(myId)copyTxt(await alertTopic(myId))};
 if(!window.MediaRecorder)$('mic').style.display='none';
-if(!myId)$('login').classList.add('on');else boot();
+
+/* Migração automática v1/v2 (localStorage) -> v3 (IndexedDB) */
+async function migrateLegacy(){
+ if(await DB.getKV('migrated'))return;
+ try{
+  const oldId=localStorage.getItem('nx_id');
+  if(oldId){
+   await DB.setKV('id',oldId);
+   const nm=localStorage.getItem('nx_name');if(nm)await DB.setKV('name',nm);
+   const th=localStorage.getItem('nx_theme');if(th)await DB.setKV('theme',th);
+   const sp=localStorage.getItem('nx_ecdh_priv'),su=localStorage.getItem('nx_ecdh_pub');
+   if(sp&&su){await DB.setKV('ecdh_priv',JSON.parse(sp));await DB.setKV('ecdh_pub',JSON.parse(su))}
+   const cs=JSON.parse(localStorage.getItem('nx_contacts')||'{}');
+   for(const id in cs){
+    const c=cs[id];
+    await DB.putChat({id,type:'dm',name:c.name||fmtId(id),pub:c.pub,ts:c.ts||Date.now(),unread:c.unread||0});
+    const hs=JSON.parse(localStorage.getItem('nx_h_'+id)||'[]');
+    for(const m of hs)await DB.putMsg({...m,id:m.id||uid(),chatId:id,kind:'text'});
+   }
+  }
+  await DB.setKV('migrated',true);
+ }catch{}
+}
+
+/* ==================== BOOT ==================== */
+async function boot(){
+ await initKeys();
+ $('myid').textContent=fmtId(myId);
+ nameIn.value=myName;
+ (await DB.allChats()).forEach(c=>chatsCache.set(c.id,c));
+ renderContacts();
+ listenPersonal();
+ if(pinHash)lockApp();
+
+ const addM=location.hash.match(/add=([A-Za-z0-9-]+)/);
+ if(addM){$('dialId').value=fmtId(cleanId(addM[1]));side.classList.add('open')}
+ const roomM=location.hash.match(/room=([A-Za-z0-9%-]+)/);
+ if(roomM){$('tabRoom').click();$('roomCodeIn').value=decodeURIComponent(roomM[1]);joinRoom(decodeURIComponent(roomM[1]))}
+ else if(innerWidth<=768)side.classList.add('open');
+}
+
+(async()=>{
+ await DB.open();
+ await migrateLegacy();
+ myId=await DB.getKV('id','');
+ myName=await DB.getKV('name','');
+ theme=await DB.getKV('theme','dark');applyTh();
+ soundOn=await DB.getKV('sound',true);updSound();
+ turnCfg=await DB.getKV('turn',null);
+ if(turnCfg){$('turnUrl').value=turnCfg.urls||'';$('turnUser').value=turnCfg.username||'';$('turnPass').value=turnCfg.credential||''}
+ pinHash=await DB.getKV('pin_hash',null);
+
+ sys('Bem-vindo ao Nexus! Passe seu ID ou entre em uma sala.');
+ if(!myId){$('login').classList.add('on');$('lname').focus()}else await boot();
+})();
+
+$('lgo').onclick=async()=>{
+ const n=$('lname').value.trim();if(!n)return toast('Digite seu nome.');
+ myId=genId();myName=n;await DB.setKV('id',myId);await DB.setKV('name',myName);
+ $('login').classList.remove('on');await boot();
+};
+$('lname').addEventListener('keydown',e=>{if(e.key==='Enter')$('lgo').click()});
 </script>
 </body>
 </html>
