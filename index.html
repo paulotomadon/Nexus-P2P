@@ -123,6 +123,8 @@ footer .ic.rec{background:var(--bad);border-color:var(--bad);color:#fff;animatio
 footer .ic.on{background:var(--ac2);border-color:var(--ac2);color:#fff}
 @keyframes pulse{50%{opacity:.5}}
 #send{background:var(--ac);color:#001418}
+#plusBtn{display:none}
+#tools{display:contents}
 #recBar{display:none;align-items:center;gap:10px;padding:8px 14px;background:#ff47571f;border-top:1px solid var(--bad);font-size:.84rem}
 #recBar.on{display:flex}
 #recBar .dot{width:10px;height:10px;border-radius:50%;background:var(--bad);animation:pulse 1s infinite}
@@ -204,10 +206,23 @@ button{-webkit-tap-highlight-color:transparent}
 @media(max-width:768px){
  input[type=text],input[type=password],textarea{font-size:16px}
  #menuBtn,.x{display:block}#q{width:90px}
- footer{gap:4px;padding:8px}footer .ic{width:34px;height:34px;font-size:.92rem}
+ footer{gap:6px;padding:8px;position:relative;align-items:flex-end}
+ footer .ic{width:38px;height:38px;font-size:1rem}
+ footer textarea{min-width:0;min-height:38px;padding:9px 14px}
+ #plusBtn{display:grid;font-size:1.5rem;line-height:1;font-weight:300;transition:transform .2s,background .2s}
+ #plusBtn.open{transform:rotate(45deg);background:var(--ac2);border-color:var(--ac2);color:#fff}
+ #tools{display:none;position:absolute;left:8px;right:8px;bottom:calc(100% + 8px);grid-template-columns:repeat(4,1fr);gap:8px;padding:12px;background:var(--panel);border:1px solid var(--ac);border-radius:16px;box-shadow:var(--shadow);z-index:26}
+ #tools.open{display:grid}
+ #tools .ic{width:auto;height:auto;min-height:64px;border-radius:12px;border-color:var(--line);color:var(--tx);background:var(--input);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:1.4rem;line-height:1}
+ #tools .ic::after{content:attr(data-l);font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:.68rem;font-weight:500;letter-spacing:0;color:var(--mu)}
+ #tools .ic.on{background:var(--ac2);border-color:var(--ac2);color:#fff}
+ #tools .ic.on::after{color:#fff}
+ footer #mic{border-color:var(--ac);color:var(--ac);background:none}
+ footer #mic::after{content:none}
+ footer #mic.rec{background:var(--bad);border-color:var(--bad);color:#fff}
  .side{position:fixed;inset:0 auto 0 0;width:88%;max-width:360px;transform:translateX(-105%);box-shadow:6px 0 24px #000c}
  .side.open{transform:none}.side.open~.scrim{display:block;position:fixed;inset:0;background:#0009;z-index:20}
- #emoji{grid-template-columns:repeat(6,1fr)}
+ #emoji{grid-template-columns:repeat(6,1fr);bottom:calc(62px + env(safe-area-inset-bottom));left:8px;right:8px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -430,14 +445,17 @@ button{-webkit-tap-highlight-color:transparent}
  <div id="replyBar"><span id="replyTx"></span><b id="replyX" style="cursor:pointer">✕</b></div>
  <div id="recBar"><span class="dot"></span><span id="recTime" class="mono">00:00</span><span style="flex:1;opacity:.8">Gravando…</span><button class="danger sm" id="recCancel">Descartar</button><button class="sm" id="recSend">Enviar</button></div>
  <footer>
-  <label class="ic" title="Anexar arquivos">📎<input type="file" id="file" multiple hidden></label>
-  <button class="ic" id="mic" title="Gravar mensagem de voz" aria-label="Gravar voz">🎤</button>
-  <button class="ic" id="pollBtn" title="Criar enquete" aria-label="Criar enquete">📊</button>
-  <button class="ic" id="wbBtn" title="Quadro branco" aria-label="Quadro branco">🎨</button>
-  <button class="ic" id="ttlBtn" title="Mensagens temporárias" aria-label="Temporizador">⏱</button>
-  <button class="ic" id="emojiBtn" title="Emojis" aria-label="Emojis">😊</button>
-  <button class="ic" id="aCall" title="Chamada de voz" aria-label="Chamada de voz">📞</button>
-  <button class="ic" id="vCall" title="Chamada de vídeo" aria-label="Chamada de vídeo">🎥</button>
+  <button class="ic" id="plusBtn" type="button" title="Mais opções" aria-label="Mais opções" aria-expanded="false" aria-controls="tools">+</button>
+  <div id="tools">
+   <label class="ic" title="Anexar arquivos" data-l="Anexar">📎<input type="file" id="file" multiple hidden></label>
+   <button class="ic" id="mic" title="Gravar mensagem de voz" aria-label="Gravar voz" data-l="Voz">🎤</button>
+   <button class="ic" id="pollBtn" title="Criar enquete" aria-label="Criar enquete" data-l="Enquete">📊</button>
+   <button class="ic" id="wbBtn" title="Quadro branco" aria-label="Quadro branco" data-l="Quadro">🎨</button>
+   <button class="ic" id="ttlBtn" title="Mensagens temporárias" aria-label="Temporizador" data-l="Temporária">⏱</button>
+   <button class="ic" id="emojiBtn" title="Emojis" aria-label="Emojis" data-l="Emojis">😊</button>
+   <button class="ic" id="aCall" title="Chamada de voz" aria-label="Chamada de voz" data-l="Ligar">📞</button>
+   <button class="ic" id="vCall" title="Chamada de vídeo" aria-label="Chamada de vídeo" data-l="Vídeo">🎥</button>
+  </div>
   <textarea id="msg" rows="1" placeholder="Mensagem..." maxlength="4000" autocomplete="off" disabled></textarea>
   <button class="ic" id="send" aria-label="Enviar" disabled>➤</button>
  </footer>
@@ -1750,8 +1768,18 @@ const em=$('emoji');'😀 😂 😍 🥰 😎 🤔 😭 😡 👍 👎 🙏 👏
 const rxPop=$('rxPop');RX_LIST.forEach(x=>{const s=el('span','',x);s.onclick=()=>{if(rxTargetId)toggleRx(rxTargetId,x);rxPop.hidden=true};rxPop.append(s)});
 function openRxPop(id,anchor){rxTargetId=id;const r=anchor.getBoundingClientRect(),mr=document.querySelector('main').getBoundingClientRect();
  rxPop.hidden=false;rxPop.style.left=Math.max(8,Math.min(mr.width-220,r.left-mr.left-80))+'px';rxPop.style.top=Math.max(54,r.top-mr.top-46)+'px'}
-$('emojiBtn').onclick=e=>{e.stopPropagation();em.hidden=!em.hidden};
-document.addEventListener('click',()=>{rxPop.hidden=true;em.hidden=true});
+$('emojiBtn').onclick=e=>{e.stopPropagation();closeTools();em.hidden=!em.hidden};
+document.addEventListener('click',()=>{rxPop.hidden=true;em.hidden=true;setTimeout(closeTools,0)});
+
+/* Menu "+" (mobile): agrupa as ferramentas; no PC os botões continuam inline */
+const tools=$('tools'),plusBtn=$('plusBtn'),mqMobile=window.matchMedia('(max-width:768px)');
+function closeTools(){tools.classList.remove('open');plusBtn.classList.remove('open');plusBtn.setAttribute('aria-expanded','false')}
+plusBtn.onclick=e=>{e.stopPropagation();em.hidden=true;rxPop.hidden=true;
+ const o=!tools.classList.contains('open');tools.classList.toggle('open',o);plusBtn.classList.toggle('open',o);plusBtn.setAttribute('aria-expanded',o)};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTools()});
+function placeMic(){const m=$('mic');if(mqMobile.matches)$('send').before(m);else $('pollBtn').before(m);if(!mqMobile.matches)closeTools()}
+if(mqMobile.addEventListener)mqMobile.addEventListener('change',placeMic);else mqMobile.addListener(placeMic);
+placeMic();
 
 function updateTtlBtn(){const v=TTL_MODES[ttlIdx];$('ttlBtn').classList.toggle('on',!!v);$('ttlBtn').textContent=v?(v<60?v+'s':(v/60)+'m'):'⏱'}
 $('ttlBtn').onclick=()=>{ttlIdx=(ttlIdx+1)%TTL_MODES.length;updateTtlBtn();toast(TTL_MODES[ttlIdx]?'Mensagens efêmeras: '+TTL_MODES[ttlIdx]+'s':'Mensagens efêmeras desativadas')};
